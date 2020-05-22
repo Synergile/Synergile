@@ -23,10 +23,12 @@ async def profile(ctx, member= None):
         await ctx.send(embed=embed)
     else:
         users = []
-        for x in ctx.guild.members:
-            if member in x.name:
-                users.append(x.name)
-                
+#        for x in ctx.guild.members:
+#            if member in x.name:
+#                users.append(x.name)
+        users.append(ctx.guild.get_member(member.id))
+
+            #this shouldn't ever be needed, due to unique ID    
             if len(users) >= 2:
                 embed = discord.Embed(title = "Multiple Users Found", color = 0xff0000)
                 embed.add_field(name=f"Found {len(users)} users, try being more specific", value = '\n'.join(users), inline = False)
