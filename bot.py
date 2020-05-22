@@ -29,7 +29,7 @@ async def profile(ctx, member= None):
         embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
         embed.add_field(name= "Username+Discrim:", value = mem.name, inline=False)
         embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
-        embed.add_field(name= "ID:", value := mem.id, inline= False)
+        embed.add_field(name= "ID:", value = mem.id, inline= False)
         await ctx.send(embed=embed)
                 
 
