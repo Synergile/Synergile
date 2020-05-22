@@ -15,24 +15,23 @@ async def profile(ctx, member= None):
     mc = commands.MemberConverter()
     if member is None:
         mem = ctx.guild.get_member(ctx.author.id)
-        embed = discord.Embed(title= ctx.author.name, color= 0x00ff00)
-        embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
-        embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
-        embed.add_field(name= "Username+Discrim:", value = ctx.author, inline=False)
-        embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
-        embed.add_field(name= "ID:", value = mem.id, inline= False)
-        await ctx.send(embed=embed)
     elif '@' in member:
         mem = await mc.convert(ctx, member)
-        embed = discord.Embed(title= mem.name, color= 0x00ff00)
-        embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
-        embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
-        embed.add_field(name= "Username+Discrim:", value = mem.name, inline=False)
-        embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
-        embed.add_field(name= "ID:", value = mem.id, inline= False)
-        await ctx.send(embed=embed)
-                
+    embed = profileEmbed(mem)
+    await ctx.send(embed=embed)
 
+def profileEmbed(mem)
+    #avoiding magic numbers
+    DISCORD_EPOCH = 1420070400000 #first second of 2015
+    userMilliseconds = mem.id/math.pow(2,22) + DISCORD_EPOCH
+    embed = discord.Embed(title= mem.name, color= 0x00ff00)
+    embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
+    embed.add_field(name= 'Joined Discord:', value = datetime.utcfromtimestamp(userMilliseconds//1000).replace(microsecond=userMilliseconds%1000*1000), inline=False)
+    embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
+    embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
+    embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
+    embed.add_field(name= "ID:", value = mem.id, inline= False)
+    return embed
 
 with open('config.config', 'r') as f:
     tok = f.readline()
