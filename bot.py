@@ -17,15 +17,17 @@ async def profile(ctx, member= None):
         mem = ctx.guild.get_member(ctx.author.id)
     elif '@' in member:
         mem = await mc.convert(ctx, member)
+    embed = profileEmbed(mem)
+    await ctx.send(embed=embed)
+
+def profileEmbed(mem)
     embed = discord.Embed(title= mem.name, color= 0x00ff00)
     embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
     embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
-    await ctx.send(embed=embed)
-                
-
+    return embed
 
 with open('config.config', 'r') as f:
     tok = f.readline()
