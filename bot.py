@@ -3,6 +3,7 @@ import asyncio
 import datetime
 from discord.ext import commands
 from discord.ext import tasks
+import os
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 @bot.event
@@ -45,4 +46,6 @@ async def profile(ctx, member= None):
                 
 
 
-bot.run("NzEzMTI5ODUxMDU3MzQwNDg3.XsboTw.b2c_QAprAh2IONu38aY-t6Giz64")
+token = os.getenv('BOT_TOKEN')
+
+bot.run('NzEzMTI5ODUxMDU3MzQwNDg3.XsboTw.b2c_QAprAh2IONu38aY-t6Giz64')
