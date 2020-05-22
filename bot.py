@@ -12,6 +12,7 @@ async def on_ready():
 
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, member= None):
+    mc = commands.MemberConverter()
     if member is None:
         mem = ctx.guild.get_member(ctx.author.id)
         embed = discord.Embed(title= ctx.author.name, color= 0x00ff00)
@@ -21,24 +22,8 @@ async def profile(ctx, member= None):
         embed.add_field(name= "Highest role", value = mem.top_role.name, inline=False)
         embed.add_field(name= "ID", value = mem.id, inline= False)
         await ctx.send(embed=embed)
-    else:
-        users = []
-#        for x in ctx.guild.members:
-#            if member in x.name:
-#                users.append(x.name)
-        users.append(ctx.guild.get_member(member.id))
-
-            #this shouldn't ever be needed, due to unique ID    
-            if len(users) >= 2:
-                embed = discord.Embed(title = "Multiple Users Found", color = 0xff0000)
-                embed.add_field(name=f"Found {len(users)} users, try being more specific", value = '\n'.join(users), inline = False)
-                await ctx.send(embed=embed)
-                break
-
-        if "@" in member:
-            user = member
-        mc = commands.MemberConverter()
-        mem = await mc.convert(ctx, user)
+    elif '@' in member:
+        mem = await mc.convert(ctx, member)
         embed = discord.Embed(title= mem.name, color= 0x00ff00)
         embed.add_field(name= 'Joined at', value = mem.joined_at, inline=False)
         embed.add_field(name= 'Is Bot', value = mem.bot, inline=False)
@@ -46,7 +31,6 @@ async def profile(ctx, member= None):
         embed.add_field(name= "Highest role", value = mem.top_role.name, inline=False)
         embed.add_field(name= "ID", value = mem.id, inline= False)
         await ctx.send(embed=embed)
-
                 
 
 
