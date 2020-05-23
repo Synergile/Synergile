@@ -31,9 +31,18 @@ async def profile(ctx, member= None):
         await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
         return
         
+    
     #generate profile embed and send
-    embed = profileEmbed(mem)
-    await ctx.send(embed=embed)
+    if(isinstance(mem,list)):
+        await ctx.send(f'Found {len(mem)} possible matches for "{member}":')
+        for memMatch in mem:    
+            embed = profileEmbed(mem)
+            await ctx.send(embed=embed)
+        if len(mem)==5:
+            await ctx.send('(number of matches shown is capped at 5, there may or may not be more)')
+    else:
+        embed = profileEmbed(mem)
+        await ctx.send(embed=embed)
 
 def profileEmbed(mem):
     #avoiding magic numbers
@@ -126,8 +135,16 @@ async def resolveMember(ctx, stringToResolve):
         #mentioned a user
         member = await mc.convert(ctx, stringToResolve)
     else:
-        #string cannot be resolved
-        member = None
+        try:
+            memList = await ctx.guild.query_members(query = stringToResolve)
+        except:
+            memList = []
+        if len(memList)==0:
+            member = None
+        elif len(memList)==1:
+            member = memList[0]
+        else:
+            return memList
     return member
 
     
