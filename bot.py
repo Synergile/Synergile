@@ -45,7 +45,7 @@ async def _8ball(ctx, *, question):
 async def choose(ctx, *choices: str):
     """Chooses between multiple choices."""
     await ctx.send(random.choice(choices))
-    
+
 #Moderation
 @bot.command()
 async def purge(ctx, amount-3):
