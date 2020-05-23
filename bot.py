@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import datetime
+import youtube_dl
 from discord.ext import commands
 from discord.ext import tasks
 import os
@@ -59,6 +60,28 @@ async def kick(ctx, member : discord.Member):
 async def ban(ctx, member : discord.Member):
     await member.ban
 
+#music
+players = {}
+
+@bot.command(pass_context=True)
+async def join(ctx):
+    channel = ctx.message.author.voice.voice_channel
+    await bot.join_voice_channel(channel)
+    
+@bot.command(pass_context=True)
+async def leave(ctx):
+    server = ctx.message.server
+    voice_client = client.voice_client_in(server)
+    await voice_bot.disconnect()
+    
+@bot.command(pass_context=True)
+async def play(ctx, url):
+    server = ctx.message.server
+    voice_client = client.voice_client_in(server)
+    player = await voice_client.create_ytdl_player(url)
+    players[server.id] = player
+    player.start()
+    
 #help
 @bot.command(pass_context=True)
 async def help(ctx):
