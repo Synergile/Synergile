@@ -1,7 +1,6 @@
 import discord
 import asyncio
 import datetime
-import re
 import youtube_dl
 from discord.ext import commands
 from discord.ext import tasks
@@ -10,8 +9,6 @@ import math
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
-SNOWFLAKE_REGEX = re.compile('\D'); #compile regular expression matching all characters that aren't digits
-
 
 @bot.event
 async def on_ready():
@@ -19,28 +16,9 @@ async def on_ready():
 
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, member= None):
-    if member is None: 
-        #self profile
+    mc = commands.MemberConverter()
+    if member is None:
         mem = ctx.guild.get_member(ctx.author.id)
-    else:
-        #resolve argument to a member
-        mem = await resolveMember(ctx, member)
-        
-    if mem is None:
-        #return when input cannot be resolved
-        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
-        return
-        
-    
-    #generate profile embed and send
-    if(isinstance(mem,list)):
-        await ctx.send(f'Found {len(mem)} possible matches for "{member}":')
-        for memMatch in mem:    
-            embed = profileEmbed(mem)
-            await ctx.send(embed=embed)
-        if len(mem)==5:
-            await ctx.send('(number of matches shown is capped at 5, there may or may not be more)')
-    else:
         embed = profileEmbed(mem)
         await ctx.send(embed=embed)
 
@@ -48,14 +26,13 @@ def profileEmbed(mem):
     #avoiding magic numbers
     DISCORD_EPOCH = 1420070400000 #first second of 2015
     userMilliseconds = int(mem.id/math.pow(2,22) + DISCORD_EPOCH)
-    embed = discord.Embed(title= mem.nick or mem.name, color= 0x00ff00, timestamp = datetime.datetime.now(datetime.timezone.utc))
+    embed = discord.Embed(title= mem.name, color= 0x00ff00)
+    embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
+    embed.add_field(name= 'Joined Discord:', value = datetime.datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
+    embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
-    embed.add_field(name= 'Is Bot?', value = 'Yes' if mem.bot else 'No', inline=False)
-    embed.add_field(name= 'Joined Discord:', value = datetime.datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
-    embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
-    embed.set_footer(text='Admin Bot')
     return embed
 
 #Fun Catergory
@@ -109,51 +86,21 @@ async def play(ctx, url):
 #help
 @bot.command(pass_context=True)
 async def help(ctx):
-    author = ctx.message.author
+    author = ctx.author
     
-    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.datetime.now(datetime.timezone.utc))
-    embed.set_footer(text='Admin Bot')
-    embed.add_field(name=f'{bot.command_prefix}ping', value='Returns Pong!', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}profile [@user | userID]', value='Display information about a given user', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}kick [@user | userID]', value='Kicks a member from the server', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}ban [@user | userID]', value='Bans a member from the server', inline=False)
-    
+    embed = discord.Embed(colour = discord.Colour.orange())
+    embed.set_author(name='Help') 
+    embed.add_field(name='ping', value='Returns Pong!', inline=False)
+    embed.add_field(name='kick', value='Kicks a member from the server', inline=False)
+    embed.add_field(name='ban', value='Bans a member from the server', inline=False)
+    embed.set_footer(text= f"Requested by {author}", icon_url=author.avatar_url)
+    embed.set_thumbnail(author.avatar_url)
     await ctx.send(embed=embed)
 
 #other
 @bot.command(desc="Says pong!")
 async def ping(ctx):
     await ctx.send('Pong! {} ms'.format(bot.latency*1000))
-
-#resolve a string to a member object
-async def resolveMember(ctx, stringToResolve):
-    mc = commands.MemberConverter()
-    if isSnowflake(stringToResolve): 
-        #gave an number that may be an ID
-        member = ctx.guild.get_member(int(stringToResolve)) #if stringToResolve is not a valid snowflake, mem=None
-    elif '@' in stringToResolve:
-        #mentioned a user
-        member = await mc.convert(ctx, stringToResolve)
-    else:
-        try:
-            memList = await ctx.guild.query_members(query = stringToResolve)
-        except:
-            memList = []
-        if len(memList)==0:
-            member = None
-        elif len(memList)==1:
-            member = memList[0]
-        else:
-            return memList
-    return member
-
-    
-#helper
-#returns true if a value only contains characters 0-9, false otherwise. does not check length. 
-#a consequence of this is that is will return true on empty values
-def isSnowflake(snowflake):
-    return isinstance(snowflake,str) and not SNOWFLAKE_REGEX.search(snowflake)
-    
     
 with open('config.config', 'r') as f:
     tok = f.readline()
