@@ -33,6 +33,17 @@ def profileEmbed(mem)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
     return embed
 
+//Fun Catergory
+@bot.command('8ball')
+async def _8ball(ctx, *, question):
+  response = ['Yes.', 'No.']
+  await ctx.send(f'Question: {question} \nAnswer: {random.choice(response)}')
+
+@bot.command()
+async def choose(ctx, *choices: str):
+    """Chooses between multiple choices."""
+    await ctx.send(random.choice(choices))
+
 with open('config.config', 'r') as f:
     tok = f.readline()
     tok.replace('\n', "")
