@@ -46,13 +46,15 @@ async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
 
 #Moderation
-@bot.command()
-async def purge(ctx, amount-3):
+@bot.command(desc="Purges the channel")
+async def purge(ctx, amount):
+    amount = int(amount)
     await ctx.channel.purge(limit=amount)
     
 @bot.command()
-async def kick(ctx, member : discord.Member):
-    await member.kick
+async def kick(ctx, member : discord.Member, *, reason="No reason provided"):
+    guild = bot.get_guild(ctx.guild.id)
+    await guild.kick(member, reason=reason)
 
 @bot.command()
 async def ban(ctx, member : discord.Member):
@@ -69,12 +71,12 @@ async def help(ctx):
     embed.add_field(name='kick', value='Kicks a member from the server', inline=False)
     embed.add_field(name='ban', value='Bans a member from the server', inline=False)
     
-    await bot.send_message(channel, embed=embed)
+    await ctx.send(embed=embed)
 
 #other
-@bot.event
-async def ping():
-    await client.say('Pong!')
+@bot.command(desc="Says pong!")
+async def ping(ctx):
+    await ctx.send('Pong! {} ms'.format(bot.latency*1000))
     
 with open('config.config', 'r') as f:
     tok = f.readline()
