@@ -73,9 +73,9 @@ async def help(ctx):
     await bot.send_message(channel, embed=embed)
 
 #other
-@bot.event
-async def ping():
-    await client.say('Pong!')
+@bot.command()
+async def ping(ctx);
+  await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
     
 with open('config.config', 'r') as f:
     tok = f.readline()
