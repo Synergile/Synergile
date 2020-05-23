@@ -64,7 +64,7 @@ async def ban(ctx, member : discord.Member):
 async def help(ctx):
     author = ctx.message.author
     
-    embed = discord.embed(colour = discord.Colour.orange())
+    embed = discord.Embed(colour = discord.Colour.orange())
     embed.set_author(name='Help') 
     embed.add_field(name='ping', value='Returns Pong!', inline=False)
     embed.add_field(name='kick', value='Kicks a member from the server', inline=False)
