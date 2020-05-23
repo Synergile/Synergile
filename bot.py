@@ -33,7 +33,7 @@ def profileEmbed(mem)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
     return embed
 
-//Fun Catergory
+#Fun Catergory
 @bot.command('8ball')
 async def _8ball(ctx, *, question):
   response = ['Yes.', 'No.']
@@ -44,10 +44,18 @@ async def choose(ctx, *choices: str):
     """Chooses between multiple choices."""
     await ctx.send(random.choice(choices))
     
-//Moderation
+#Moderation
 @bot.command()
 async def purge(ctx, amount-3):
     await ctx.channel.purge(limit=amount)
+    
+@bot.command()
+async def kick(ctx, member : discord.Member):
+    await member.kick
+
+@bot.command()
+async def ban(ctx, member : discord.Member):
+    await member.ban
 
 with open('config.config', 'r') as f:
     tok = f.readline()
