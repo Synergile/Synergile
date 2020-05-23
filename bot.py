@@ -21,12 +21,8 @@ async def profile(ctx, member= None):
     await ctx.send(embed=embed)
 
 def profileEmbed(mem)
-    #avoiding magic numbers
-    DISCORD_EPOCH = 1420070400000 #first second of 2015
-    ms = mem.id/math.pow(2,22) + DISCORD_EPOCH
     embed = discord.Embed(title= mem.name, color= 0x00ff00)
     embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
-    embed.add_field(name= 'Joined Discord:', value = datetime.utcfromtimestamp(ms//1000).replace(microsecond=ms%1000*1000), inline=False)
     embed.add_field(name= 'Is Bot:', value = mem.bot, inline=False)
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
