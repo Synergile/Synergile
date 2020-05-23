@@ -39,14 +39,14 @@ def profileEmbed(mem):
     #avoiding magic numbers
     DISCORD_EPOCH = 1420070400000 #first second of 2015
     userMilliseconds = int(mem.id/math.pow(2,22) + DISCORD_EPOCH)
-    embed = discord.Embed(title= mem.name, color= 0x00ff00, timestamp = datetime.datetime.now(datetime.timezone.utc))
-    embed.set_footer(text='Admin Bot')
+    embed = discord.Embed(title= mem.nick or mem.name, color= 0x00ff00, timestamp = datetime.datetime.now(datetime.timezone.utc))
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
     embed.add_field(name= 'Is Bot?', value = 'Yes' if mem.bot else 'No', inline=False)
     embed.add_field(name= 'Joined Discord:', value = datetime.datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
     embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
+    embed.set_footer(text='Admin Bot')
     return embed
 
 #Fun Catergory
