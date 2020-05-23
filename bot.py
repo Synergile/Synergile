@@ -10,7 +10,7 @@ import math
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
-SNOWFLAKE_REGEX = re.compile('\D');
+SNOWFLAKE_REGEX = re.compile('\D'); #compile regular expression matching all characters that aren't digits
 
 
 @bot.event
@@ -20,19 +20,25 @@ async def on_ready():
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, member= None):
     mc = commands.MemberConverter()
-    if member is None:
+    if member is None: 
+        #self profile
         mem = ctx.guild.get_member(ctx.author.id)
-    elif isSnowflake(member):
+    elif isSnowflake(member): 
+        #gave an number that may be an ID
         mem = ctx.guild.get_member(int(member)) #if member is not a valid snowflake, mem=None
     elif '@' in member:
+        #mentioned a user
         mem = await mc.convert(ctx, member)
     else:
+        #invalid usage
         mem = None #causes bot to reply that the input was invalid and return
         
-    if mem is None: #return when invalid
-        await ctx.send('You must provide a valid user reference')
+    if mem is None:
+        #return when input cannot be resolved
+        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
         return
         
+    #generate profile embed and send
     embed = profileEmbed(mem)
     await ctx.send(embed=embed)
 
