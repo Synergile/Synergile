@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import datetime
+import re
 import youtube_dl
 from discord.ext import commands
 from discord.ext import tasks
@@ -9,6 +10,8 @@ import math
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
+SNOWFLAKE_REGEX = re.compile('\D');
+
 
 @bot.event
 async def on_ready():
@@ -19,8 +22,19 @@ async def profile(ctx, member= None):
     mc = commands.MemberConverter()
     if member is None:
         mem = ctx.guild.get_member(ctx.author.id)
-        embed = profileEmbed(mem)
-        await ctx.send(embed=embed)
+    elif isSnowflake(member):
+        mem = ctx.guild.get_member(int(member)) #if member is not a valid snowflake, mem=None
+    elif '@' in member:
+        mem = await mc.convert(ctx, member)
+    else:
+        mem = None #causes bot to reply that the input was invalid and return
+        
+    if mem is None: #return when invalid
+        await ctx.send('You must provide a valid user reference')
+        return
+        
+    embed = profileEmbed(mem)
+    await ctx.send(embed=embed)
 
 def profileEmbed(mem):
     #avoiding magic numbers
@@ -29,7 +43,7 @@ def profileEmbed(mem):
     embed = discord.Embed(title= mem.name, color= 0x00ff00)
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
-    embed.add_field(name= 'Is Bot?:', value = 'Yes' if mem.bot else 'No', inline=False)
+    embed.add_field(name= 'Is Bot?', value = 'Yes' if mem.bot else 'No', inline=False)
     embed.add_field(name= 'Joined Discord:', value = datetime.datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
     embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
@@ -100,6 +114,14 @@ async def help(ctx):
 @bot.command(desc="Says pong!")
 async def ping(ctx):
     await ctx.send('Pong! {} ms'.format(bot.latency*1000))
+    
+    
+#helper
+#returns true if a value only contains characters 0-9, false otherwise. does not check length. 
+#a consequence of this is that is will return true on empty values
+def isSnowflake(snowflake):
+    return isinstance(snowflake,str) and not SNOWFLAKE_REGEX.search(snowflake)
+    
     
 with open('config.config', 'r') as f:
     tok = f.readline()
