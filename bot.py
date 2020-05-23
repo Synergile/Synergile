@@ -46,7 +46,8 @@ def profileEmbed(mem):
     #avoiding magic numbers
     DISCORD_EPOCH = 1420070400000 #first second of 2015
     userMilliseconds = int(mem.id/math.pow(2,22) + DISCORD_EPOCH)
-    embed = discord.Embed(title= mem.name, color= 0x00ff00)
+    embed = discord.Embed(title= mem.name, color= 0x00ff00, timestamp = datetime.datetime.now(datetime.timezone.utc))
+    embed.set_footer(text='Admin Bot')
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
     embed.add_field(name= 'Is Bot?', value = 'Yes' if mem.bot else 'No', inline=False)
@@ -108,11 +109,12 @@ async def play(ctx, url):
 async def help(ctx):
     author = ctx.message.author
     
-    embed = discord.Embed(colour = discord.Colour.orange())
-    embed.set_author(name='Help') 
-    embed.add_field(name='ping', value='Returns Pong!', inline=False)
-    embed.add_field(name='kick', value='Kicks a member from the server', inline=False)
-    embed.add_field(name='ban', value='Bans a member from the server', inline=False)
+    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.datetime.now(datetime.timezone.utc))
+    embed.set_footer(text='Admin Bot')
+    embed.add_field(name=f'{bot.command_prefix}ping', value='Returns Pong!', inline=False)
+    embed.add_field(name=f'{bot.command_prefix}profile [@user | userID]', value='Display information about a given user', inline=False)
+    embed.add_field(name=f'{bot.command_prefix}kick [@user | userID]', value='Kicks a member from the server', inline=False)
+    embed.add_field(name=f'{bot.command_prefix}ban [@user | userID]', value='Bans a member from the server', inline=False)
     
     await ctx.send(embed=embed)
 
