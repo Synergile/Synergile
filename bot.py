@@ -43,6 +43,14 @@ async def _8ball(ctx, *, question):
 async def choose(ctx, *choices: str):
     """Chooses between multiple choices."""
     await ctx.send(random.choice(choices))
+    
+@bot.command()
+async def kick(ctx, member : discord.Member):
+    await member.kick
+    
+@bot.command()
+async def ban(ctx, member : discord.Member):
+    await member.ban
 
 with open('config.config', 'r') as f:
     tok = f.readline()
