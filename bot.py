@@ -19,19 +19,12 @@ async def on_ready():
 
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, member= None):
-    mc = commands.MemberConverter()
     if member is None: 
         #self profile
         mem = ctx.guild.get_member(ctx.author.id)
-    elif isSnowflake(member): 
-        #gave an number that may be an ID
-        mem = ctx.guild.get_member(int(member)) #if member is not a valid snowflake, mem=None
-    elif '@' in member:
-        #mentioned a user
-        mem = await mc.convert(ctx, member)
     else:
-        #invalid usage
-        mem = None #causes bot to reply that the input was invalid and return
+        #resolve argument to a member
+        mem = await resolveMember(ctx, member)
         
     if mem is None:
         #return when input cannot be resolved
@@ -122,7 +115,21 @@ async def help(ctx):
 @bot.command(desc="Says pong!")
 async def ping(ctx):
     await ctx.send('Pong! {} ms'.format(bot.latency*1000))
-    
+
+#resolve a string to a member object
+async def resolveMember(ctx, stringToResolve):
+    mc = commands.MemberConverter()
+    if isSnowflake(stringToResolve): 
+        #gave an number that may be an ID
+        member = ctx.guild.get_member(int(stringToResolve)) #if stringToResolve is not a valid snowflake, mem=None
+    elif '@' in stringToResolve:
+        #mentioned a user
+        member = await mc.convert(ctx, stringToResolve)
+    else:
+        #string cannot be resolved
+        member = None
+    return member
+
     
 #helper
 #returns true if a value only contains characters 0-9, false otherwise. does not check length. 
