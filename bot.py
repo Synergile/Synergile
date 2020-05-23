@@ -6,6 +6,8 @@ from discord.ext import tasks
 import os
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
+bot.remove_command('help') #removing the default help cmd
+
 @bot.event
 async def on_ready():
     print (f"Bot online")
@@ -57,6 +59,24 @@ async def kick(ctx, member : discord.Member):
 async def ban(ctx, member : discord.Member):
     await member.ban
 
+#help
+@bot.command(pass_context=True)
+async def help(ctx):
+    author = ctx.message.author
+    
+    embed = discord.embed(colour = discord.Colour.orange())
+    embed.set_author(name='Help') 
+    embed.add_field(name='ping', value='Returns Pong!', inline=False)
+    embed.add_field(name='kick', value='Kicks a member from the server', inline=False)
+    embed.add_field(name='ban', value='Bans a member from the server', inline=False)
+    
+    await bot.send_message(channel, embed=embed)
+
+#other
+@bot.event
+async def ping():
+    await client.say('Pong!')
+    
 with open('config.config', 'r') as f:
     tok = f.readline()
     tok.replace('\n', "")
