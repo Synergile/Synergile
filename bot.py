@@ -19,6 +19,10 @@ SNOWFLAKE_REGEX = re.compile('\D'); #compile regular expression matching all cha
 async def on_ready():
     print (f"Bot online")
 
+@bot.event
+async def on_command_error(ctx, error):
+    await ctx.send("An error occured!\n```{}```".format(error))
+
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, member= None):
     if member is None: 
