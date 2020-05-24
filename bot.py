@@ -169,6 +169,15 @@ async def build_info(ctx, file_override=None):
         file = file_override
         with open(file, 'r') as f:
             await ctx.send(f.readlines())
+            
+for cog in os.listdir(".\\cogs"):#path
+	if cog.endswith(".py"):
+		try:
+			cog = f"cogs.{cog.replace('.py', '')}"
+			bot.load_extension(cog)
+		except Exception as e:
+			print(f"{cog} cannot be loaded:")
+			raise e
 
 with open('config.config', 'r') as f:
     tok = f.readline()
