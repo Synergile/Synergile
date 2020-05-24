@@ -9,6 +9,7 @@ from discord.ext import commands
 from discord.ext import tasks
 import os
 import math
+import random
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
@@ -18,6 +19,10 @@ SNOWFLAKE_REGEX = re.compile('\D'); #compile regular expression matching all cha
 @bot.event
 async def on_ready():
     print (f"Bot online")
+
+@bot.event
+async def on_command_error(ctx, error):
+    await ctx.send("An error occured!\n```{}```".format(error))
 
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, member= None):
