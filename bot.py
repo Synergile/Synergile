@@ -93,21 +93,22 @@ players = {}
 
 @bot.command(pass_context=True)
 async def join(ctx):
-    channel = ctx.message.author.voice.voice_channel
-    await bot.join_voice_channel(channel)
+    member = ctx.guild.get_member(ctx.author.id)
+    vc = member.voice.channel
+    await vc.connect()
+
     
 @bot.command(pass_context=True)
 async def leave(ctx):
-    server = ctx.message.server
-    voice_client = client.voice_client_in(server)
-    await voice_bot.disconnect()
-    
+    vc = ctx.guild.voice_client   
+    await vc.disconnect()
+
 @bot.command(pass_context=True)
 async def play(ctx, url):
-    server = ctx.message.server
-    voice_client = client.voice_client_in(server)
+    server = ctx.message.guild
+    voice_client = ctx.guild.voice_client
     player = await voice_client.create_ytdl_player(url)
-    players[server.id] = player
+    players[guild.id] = player
     player.start()
     
 #help
@@ -157,6 +158,18 @@ def isSnowflake(snowflake):
     return isinstance(snowflake,str) and not SNOWFLAKE_REGEX.search(snowflake)
     
     
+@bot.command(desc="Displays build info")
+async def build_info(ctx, file_override=None):
+    if file_override is None:
+        file= 'buildinfo.conf'
+        with open(file, 'r') as f:
+            await ctx.send(f.readlines())
+
+    else:
+        file = file_override
+        with open(file, 'r') as f:
+            await ctx.send(f.readlines())
+
 with open('config.config', 'r') as f:
     tok = f.readline()
     tok.replace('\n', "")
