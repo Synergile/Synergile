@@ -9,6 +9,7 @@ from discord.ext import commands
 from discord.ext import tasks
 import os
 import math
+import random
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
@@ -109,7 +110,7 @@ async def leave(ctx):
 
 @bot.command(pass_context=True)
 async def play(ctx, url):
-    server = ctx.message.guild
+    guild = ctx.message.guild
     voice_client = ctx.guild.voice_client
     player = await voice_client.create_ytdl_player(url)
     players[guild.id] = player
