@@ -18,6 +18,7 @@ SNOWFLAKE_REGEX = re.compile('\D') #compile regular expression matching all char
 
 @bot.event
 async def on_ready():
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game('Gobot.gg'))
     print (f"Bot online")
 
 @bot.command(desc="Gets information about a user and outputs it")
