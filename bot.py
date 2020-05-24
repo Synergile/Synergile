@@ -103,6 +103,11 @@ async def help(ctx):
 @bot.command(desc="Says pong!")
 async def ping(ctx):
     await ctx.send('Pong! {} ms'.format(bot.latency*1000))
+    
+@bot.event
+async def on_member_join(ctx):
+    role = discord.utils.get(ctx.guild.roles, name = "Member") 
+    await ctx.add_roles(role)
 
 @bot.command(desc="Displays build info")
 async def build_info(ctx, file_override=None):
