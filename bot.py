@@ -36,12 +36,13 @@ async def profile(ctx, member= None):
     
     #generate profile embed and send
     if(isinstance(mem, list)):
-        await ctx.send(f'Found {len(mem)} possible matches for "{member}":')
-        for memMatch in mem:    
-            embed = profileEmbed(ctx.message.author, mem)
-            await ctx.send(embed=embed)
+        strBuilder=f'Found {len(mem)} possible matches for "{member}":```'
+        strBuilder=''.join([strBuilder, ''.join(f'\n{index+1}. {memMatch.name}' for index,memMatch in enumerate(mem))])
+        strBuilder+=f'```'
         if len(mem)==5:
-            await ctx.send('(number of matches shown is capped at 5, there may or may not be more)')
+            strBuilder+=f'\n(number of matches shown is capped at 5, there may or may not be more)'
+        strBuilder+=f'\nTry using the {bot.command_prefix}profile command again with a more specific search term!'
+        await ctx.send(strBuilder)
     else:
         embed = profileEmbed(ctx.message.author, mem)
         await ctx.send(embed=embed)
@@ -113,7 +114,7 @@ async def play(ctx, url):
 @bot.command(pass_context=True)
 async def help(ctx):
     author = ctx.message.author
-    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.now(datetime.timezone.utc))
+    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.now(timezone.utc))
     embed.add_field(name=f'{bot.command_prefix}ping', value='Returns Pong!', inline=False)
     embed.add_field(name=f'{bot.command_prefix}profile [@user | userID]', value='Display information about a given user', inline=False)
     embed.add_field(name=f'{bot.command_prefix}kick <@user | userID>', value='Kicks a member from the server', inline=False)
