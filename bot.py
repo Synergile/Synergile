@@ -96,25 +96,60 @@ async def ban(ctx, member : discord.Member):
 #music
 players = {}
 
-@bot.command(pass_context=True)
+@bot.command()
 async def join(ctx):
     member = ctx.guild.get_member(ctx.author.id)
     vc = member.voice.channel
     await vc.connect()
 
     
-@bot.command(pass_context=True)
+@bot.command()
 async def leave(ctx):
     vc = ctx.guild.voice_client   
     await vc.disconnect()
 
-@bot.command(pass_context=True)
-async def play(ctx, url):
-    server = ctx.message.guild
-    voice_client = ctx.guild.voice_client
-    player = await voice_client.create_ytdl_player(url)
-    players[guild.id] = player
-    player.start()
+@bot.command(aliases='p')
+async def play(ctx, url: str):
+    song_there = os.path.isfile("song.mp3")
+    try:
+        if song_there:
+            os.remove("song.mp3")
+            print("Removed old song file")
+    except PermissionError:
+        print("Trying to delete song file, but it's being played")
+        await ctx.send("ERROR: Music playing")
+        return
+
+    await ctx.send("Getting everything ready now")
+
+    voice = get(bot.voice_clients, guild=ctx.guild)
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        print("Downloading audio now\n")
+        ydl.download([url])
+
+    for file in os.listdir("./"):
+        if file.endswith(".mp3"):
+            name = file
+            print(f"Renamed File: {file}\n")
+            os.rename(file, "song.mp3")
+
+    voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: print("Song done!"))
+    voice.source = discord.PCMVolumeTransformer(voice.source)
+    voice.source.volume = 0.07
+
+    nname = name.rsplit("-", 2)
+    await ctx.send(f"Playing: {nname[0]}")
+    print("playing\n")
     
 #help
 @bot.command(pass_context=True)
