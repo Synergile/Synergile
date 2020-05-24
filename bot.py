@@ -10,7 +10,7 @@ from discord.ext import tasks
 import os
 import math
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
-bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
+bot = commands.Bot(command_prefix='$', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
 SNOWFLAKE_REGEX = re.compile('\D'); #compile regular expression matching all characters that aren't digits
 
@@ -74,19 +74,67 @@ async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
 
 #Moderation
-@bot.command(desc="Purges the channel")
+@bot.command(desc="Purges a number of messages from the channel")
 async def purge(ctx, amount):
     amount = int(amount)
     await ctx.channel.purge(limit=amount)
     
-@bot.command()
-async def kick(ctx, member : discord.Member, *, reason="No reason provided"):
-    guild = bot.get_guild(ctx.guild.id)
-    await guild.kick(member, reason=reason)
+@bot.command(desc="Kick a member from the server")
+async def kick(ctx, member=None, *, reason="No reason provided"):
+    if member is None:
+        mem = None
+    else:
+        #resolve argument to a member
+        mem = await resolveMember(ctx, member)
+    
+    if mem is None:
+        #return when input cannot be resolved
+        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
+        return
+    
+    if(isinstance(mem, list)):
+        strBuilder=f'Found {len(mem)} possible matches for "{member}":```'
+        strBuilder=''.join([strBuilder, ''.join(f'\n{index+1}. {memMatch.name}' for index,memMatch in enumerate(mem))])
+        strBuilder+=f'```'
+        if len(mem)==5:
+            strBuilder+=f'\n(number of matches shown is capped at 5, there may or may not be more)'
+        strBuilder+=f'\nTry using the {bot.command_prefix}kick command again with a more specific search term!'
+        await ctx.send(strBuilder)
+    else:
+        try:
+            await ctx.guild.kick(mem, reason=reason)
+            await ctx.guild.get_channel(713131470625046549).send(f'Kicked {mem.mention} with reason: {reason}\nIssued by {ctx.author.mention}')
+        except:
+            await ctx.send('An unknown error occured. Please try again later')
 
-@bot.command()
-async def ban(ctx, member : discord.Member):
-    await member.ban
+
+@bot.command(desc="Ban a member from the server")
+async def ban(ctx, member=None, *, reason = "No reason provided"):
+    if member is None:
+        mem = None
+    else:
+        #resolve argument to a member
+        mem = await resolveMember(ctx, member)
+    
+    if mem is None:
+        #return when input cannot be resolved
+        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
+        return
+    
+    if(isinstance(mem, list)):
+        strBuilder=f'Found {len(mem)} possible matches for "{member}":```'
+        strBuilder=''.join([strBuilder, ''.join(f'\n{index+1}. {memMatch.name}' for index,memMatch in enumerate(mem))])
+        strBuilder+=f'```'
+        if len(mem)==5:
+            strBuilder+=f'\n(number of matches shown is capped at 5, there may or may not be more)'
+        strBuilder+=f'\nTry using the {bot.command_prefix}ban command again with a more specific search term!'
+        await ctx.send(strBuilder)
+    else:
+        try:
+            await ctx.guild.ban(mem, reason=reason)
+            await ctx.guild.get_channel(713131470625046549).send(f'Banned {mem.mention} with reason: {reason}\nIssued by {ctx.author.mention}')
+        except:
+            await ctx.send('An unknown error occured. Please try again later')
 
 #music
 players = {}
