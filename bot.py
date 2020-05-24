@@ -1,6 +1,8 @@
 import discord
 import asyncio
 import datetime
+from datetime import datetime
+from datetime import timezone
 import re
 import youtube_dl
 from discord.ext import commands
@@ -33,29 +35,30 @@ async def profile(ctx, member= None):
         
     
     #generate profile embed and send
-    if(isinstance(mem,list)):
+    if(isinstance(mem, list)):
         await ctx.send(f'Found {len(mem)} possible matches for "{member}":')
         for memMatch in mem:    
-            embed = profileEmbed(mem)
+            embed = profileEmbed(ctx.message.author, mem)
             await ctx.send(embed=embed)
         if len(mem)==5:
             await ctx.send('(number of matches shown is capped at 5, there may or may not be more)')
     else:
-        embed = profileEmbed(mem)
+        embed = profileEmbed(ctx.message.author, mem)
         await ctx.send(embed=embed)
 
-def profileEmbed(mem):
+def profileEmbed(author, mem):
     #avoiding magic numbers
     DISCORD_EPOCH = 1420070400000 #first second of 2015
     userMilliseconds = int(mem.id/math.pow(2,22) + DISCORD_EPOCH)
-    embed = discord.Embed(title= mem.nick or mem.name, color= 0x00ff00, timestamp = datetime.datetime.now(datetime.timezone.utc))
+    embed = discord.Embed(title= mem.nick or mem.name, color= 0x00ff00, timestamp = datetime.now(timezone.utc))
+    embed.set_thumbnail(url=mem.avatar_url)
     embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
     embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
     embed.add_field(name= 'Is Bot?', value = 'Yes' if mem.bot else 'No', inline=False)
-    embed.add_field(name= 'Joined Discord:', value = datetime.datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
+    embed.add_field(name= 'Joined Discord:', value = datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
     embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
     embed.add_field(name= "ID:", value = mem.id, inline= False)
-    embed.set_footer(text='Admin Bot')
+    embed.set_footer(text= f"Requested by {author}", icon_url=author.avatar_url)
     return embed
 
 #Fun Catergory
@@ -110,14 +113,12 @@ async def play(ctx, url):
 @bot.command(pass_context=True)
 async def help(ctx):
     author = ctx.message.author
-    
-    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.datetime.now(datetime.timezone.utc))
-    embed.set_footer(text='Admin Bot')
+    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.now(datetime.timezone.utc))
     embed.add_field(name=f'{bot.command_prefix}ping', value='Returns Pong!', inline=False)
     embed.add_field(name=f'{bot.command_prefix}profile [@user | userID]', value='Display information about a given user', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}kick [@user | userID]', value='Kicks a member from the server', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}ban [@user | userID]', value='Bans a member from the server', inline=False)
-    
+    embed.add_field(name=f'{bot.command_prefix}kick <@user | userID>', value='Kicks a member from the server', inline=False)
+    embed.add_field(name=f'{bot.command_prefix}ban <@user | userID>', value='Bans a member from the server', inline=False)
+    embed.set_footer(text= f"Requested by {author}", icon_url=author.avatar_url)    
     await ctx.send(embed=embed)
 
 #other
