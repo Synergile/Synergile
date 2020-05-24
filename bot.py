@@ -81,9 +81,9 @@ async def leave(ctx):
 @bot.command(pass_context=True)
 async def play(ctx, url):
     server = ctx.message.guild
-    voice_client = ctx.guild.VoiceClient
+    voice_client = ctx.guild.voice_client
     player = await voice_client.create_ytdl_player(url)
-    players[server.id] = player
+    players[guild.id] = player
     player.start()
     
 #help
