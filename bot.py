@@ -18,7 +18,7 @@ SNOWFLAKE_REGEX = re.compile('\D') #compile regular expression matching all char
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game('Gobot.gg'))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
     print (f"Bot online")
 
 @bot.command(desc="Gets information about a user and outputs it")
@@ -38,7 +38,7 @@ async def profile(ctx, *, member= None):
     
     #generate profile embed and send
     if(isinstance(mem, list)):
-        usersFound = multiMatchStringBuilder(mem, member, 'profile')
+        usersFound = buildMultiMatchString(mem, member, 'profile')
         await ctx.send(usersFound)
     else:
         embed = profileEmbed(ctx.message.author, mem)
@@ -90,12 +90,12 @@ async def kick(ctx,*, member=None, reason="No reason provided"):
         return
     
     if(isinstance(mem, list)):
-        usersFound = multiMatchStringBuilder(mem, member, 'kick')
+        usersFound = buildMultiMatchString(mem, member, 'kick')
         await ctx.send(usersFound)
     else:
         try:
             await ctx.guild.kick(mem, reason=reason)
-            await ctx.guild.get_channel(713131470625046549).send(f'Kicked {mem.mention} with reason: {reason}\nIssued by {ctx.author}')
+            await ctx.guild.get_channel(713131470625046549).send(embed=modActionLogEmbed('Kicked',mem,reason,ctx.author))
         except:
             await ctx.send('An unknown error occured. Please try again later')
 
@@ -114,12 +114,12 @@ async def ban(ctx,*, member=None, reason = "No reason provided"):
         return
     
     if(isinstance(mem, list)):
-        usersFound = multiMatchStringBuilder(mem, member, 'ban')
+        usersFound = buildMultiMatchString(mem, member, 'ban')
         await ctx.send(usersFound)
     else:
         try:
             await ctx.guild.ban(mem, reason=reason)
-            await ctx.guild.get_channel(713131470625046549).send(f'Banned {mem.mention} with reason: {reason}\nIssued by {ctx.author}')
+            await ctx.guild.get_channel(713131470625046549).send(embed=modActionLogEmbed('Banned',mem,reason,ctx.author))
         except:
             await ctx.send('An unknown error occured. Please try again later')
 
@@ -169,6 +169,7 @@ async def on_member_join(ctx):
     role = discord.utils.get(ctx.guild.roles, name = "Member") 
     await ctx.add_roles(role)
 
+#should be a util when cog setup
 #resolve a string to a member object
 async def resolveMember(ctx, stringToResolve):
     mc = commands.MemberConverter()
@@ -191,7 +192,8 @@ async def resolveMember(ctx, stringToResolve):
             return memList
     return member
 
-def multiMatchStringBuilder(mem,member,command):
+#should be a util when cog setup
+def buildMultiMatchString(mem,member,command):
     strBuilder=f'Found {len(mem)} possible matches for "{member}":```'
     strBuilder=''.join([strBuilder, ''.join(f'\n{index+1}. {memMatch}' for index,memMatch in enumerate(mem))])
     strBuilder+=f'```'
@@ -199,6 +201,12 @@ def multiMatchStringBuilder(mem,member,command):
         strBuilder+=f'\n(number of matches shown is capped at 5, there may or may not be more)'
     strBuilder+=f'\nTry using the {bot.command_prefix}{command} command again with a more specific search term!'
     return strBuilder
+    
+#should be a util class when cog setup
+def modActionLogEmbed(action,member,reason,issuer=bot):
+    embed = discord.Embed(colour = discord.Colour.red(), description = f'{action} {member.mention} with reason: {reason}', timestamp = datetime.now(timezone.utc))
+    embed.set_footer(text= f"Issued by {issuer}({issuer.id})", icon_url=issuer.avatar_url)
+    return embed
     
 #helper
 #returns true if a value only contains characters 0-9, false otherwise. does not check length. 
