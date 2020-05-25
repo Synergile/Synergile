@@ -305,6 +305,11 @@ def splitArgs(input):
     flags.pop(0) # remove leading empty string
     flags = [flag.lower() for flag in flags]
     return [optionSplitArgs, flags]
+
+#replace occurances of a substring from the back
+def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
     
 @bot.command(desc="Displays build info")
 async def build_info(ctx, file_override=None):
