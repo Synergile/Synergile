@@ -4,12 +4,12 @@ from discord.ext import commands
 start_time = time.time()
 start_time = datetime.datetime.utcnow()
 
-class Uptime(commands.Cog):
+class Uptime(commands.Cog, name='Uptime'):
 	def __init__(self, bot):
 		self.bot = bot
 
-# @commands.command()
-	async def uptime(ctx: commands.Context):
+    @commands.command()
+	async def uptime(self, ctx):
 		now = datetime.datetime.utcnow()
 		delta = now - start_time
 		hours, remainder = divmod(int(delta.total_seconds()), 3600)
