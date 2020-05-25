@@ -178,7 +178,7 @@ async def leave(ctx):
     vc = ctx.guild.voice_client   
     await vc.disconnect()
 
-@bot.command(aliases='p')
+@bot.command(aliases=['p'])
 async def play(ctx, url: str):
     song_there = os.path.isfile("song.mp3")
     try:
@@ -318,10 +318,10 @@ async def build_info(ctx, file_override=None):
         with open(file, 'r') as f:
             await ctx.send(f.readlines())
             
-for cog in os.listdir(".\\cogs"):#path
+for cog in os.listdir(".\\commands"):#path
 	if cog.endswith(".py"):
 		try:
-			cog = f"cogs.{cog.replace('.py', '')}"
+			cog = f"commands.{cog.replace('.py', '')}"
 			bot.load_extension(cog)
 		except Exception as e:
 			print(f"{cog} cannot be loaded:")
