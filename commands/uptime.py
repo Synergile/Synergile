@@ -22,13 +22,13 @@ class Uptime(commands.Cog, name='Uptime'):
 		days, hours = divmod(hours, 24)
 		uptime_stamp = ''
 		if days:
-			uptime_stamp += f'**{days}** days, '
+			uptime_stamp += f'**{days}** {"day" if days==1 else "days"}, '
 		if hours:
-			uptime_stamp += f'**{hours}** hours, '
+			uptime_stamp += f'**{hours}** {"hour" if hours==1 else "hours"}, '
 		if minutes:
-			uptime_stamp += f'**{minutes}** minutes, '
+			uptime_stamp += f'**{minutes}** {"minute" if minutes==1 else "minutes"}, '
 		if seconds:
-			uptime_stamp += f'**{seconds}** seconds, '
+			uptime_stamp += f'**{seconds}** {"second" if seconds==1 else "seconds"}, '
 		uptime_stamp=self.rreplace(s=uptime_stamp, old=', ', new='', occurrence=1)
 		if uptime_stamp.count(',') > 1:
 			uptime_stamp=self.rreplace(s=uptime_stamp, old=', ', new=', and ', occurrence=1)
