@@ -38,12 +38,13 @@ async def profile(ctx, *, member= None):
     
     #generate profile embed and send
     if(isinstance(mem, list)):
-        usersFound = buildMultiMatchString(mem, member, 'profile')
+        usersFound = buildMultiMatchString('profile', mem, member)
         await ctx.send(usersFound)
     else:
         embed = profileEmbed(ctx.message.author, mem)
         await ctx.send(embed=embed)
 
+#this should go in the Profile cog
 def profileEmbed(author, mem):
     #avoiding magic numbers
     DISCORD_EPOCH = 1420070400000 #first second of 2015
@@ -81,6 +82,11 @@ async def kick(ctx,*, member=None, reason="No reason provided"):
     if member is None:
         mem = None
     else:
+        args = splitArgs(member)
+        if len(args)==1:
+            member = args[0]
+        else:
+            member = args[0][0]
         #resolve argument to a member
         mem = await resolveMember(ctx, member)
     
@@ -90,21 +96,37 @@ async def kick(ctx,*, member=None, reason="No reason provided"):
         return
     
     if(isinstance(mem, list)):
-        usersFound = buildMultiMatchString(mem, member, 'kick')
+        usersFound = buildMultiMatchString('kick', mem, member)
         await ctx.send(usersFound)
     else:
+        indexReason = -1
+        try:
+            indexReason = args[1].index('r') + 1
+        except Exception:
+            pass
+        if indexReason > -1:
+            try:
+                if args[0][indexReason] is not None:
+                    reason = args[0][indexReason]
+            except Exception:
+                await ctx.send('An error occurred while attempting to parse arguments')
+                return
         try:
             await ctx.guild.kick(mem, reason=reason)
             await ctx.guild.get_channel(713131470625046549).send(embed=modActionLogEmbed('Kicked',mem,reason,ctx.author))
-        except:
+        except Exception:
             await ctx.send('An unknown error occured. Please try again later')
 
-#todo: extract multi-match list string builder function
 @bot.command(desc="Ban a member from the server")
 async def ban(ctx,*, member=None, reason = "No reason provided"):
     if member is None:
         mem = None
     else:
+        args = splitArgs(member)
+        if len(args)==1:
+            member = args[0]
+        else:
+            member = args[0][0]
         #resolve argument to a member
         mem = await resolveMember(ctx, member)
     
@@ -114,13 +136,25 @@ async def ban(ctx,*, member=None, reason = "No reason provided"):
         return
     
     if(isinstance(mem, list)):
-        usersFound = buildMultiMatchString(mem, member, 'ban')
+        usersFound = buildMultiMatchString('ban', mem, member)
         await ctx.send(usersFound)
     else:
+        indexReason = -1
+        try:
+            indexReason = args[1].index('r') + 1
+        except Exception:
+            pass
+        if indexReason > -1:
+            try:
+                if args[0][indexReason] is not '':
+                    reason = args[0][indexReason]
+            except Exception:
+                await ctx.send('An error occurred while attempting to parse arguments')
+                return
         try:
             await ctx.guild.ban(mem, reason=reason)
             await ctx.guild.get_channel(713131470625046549).send(embed=modActionLogEmbed('Banned',mem,reason,ctx.author))
-        except:
+        except Exception:
             await ctx.send('An unknown error occured. Please try again later')
 
 
@@ -173,16 +207,20 @@ async def on_member_join(ctx):
 #resolve a string to a member object
 async def resolveMember(ctx, stringToResolve):
     mc = commands.MemberConverter()
+    stringToResolve = stringToResolve.strip()
     if isSnowflake(stringToResolve): 
         #gave an number that may be an ID
         member = ctx.guild.get_member(int(stringToResolve)) #if stringToResolve is not a valid snowflake, mem=None
     elif '@' in stringToResolve:
         #mentioned a user
-        member = await mc.convert(ctx, stringToResolve)
+        try:
+            member = await mc.convert(ctx, stringToResolve)
+        except Exception:
+            member = None
     else:
         try:
             memList = await ctx.guild.query_members(query = stringToResolve)
-        except:
+        except Exception:
             memList = []
         if len(memList)==0:
             member = None
@@ -193,7 +231,7 @@ async def resolveMember(ctx, stringToResolve):
     return member
 
 #should be a util when cog setup
-def buildMultiMatchString(mem,member,command):
+def buildMultiMatchString(command,mem,member):
     strBuilder=f'Found {len(mem)} possible matches for "{member}":```'
     strBuilder=''.join([strBuilder, ''.join(f'\n{index+1}. {memMatch}' for index,memMatch in enumerate(mem))])
     strBuilder+=f'```'
@@ -213,7 +251,25 @@ def modActionLogEmbed(action,member,reason,issuer=bot):
 #a consequence of this is that is will return true on empty values
 def isSnowflake(snowflake):
     return isinstance(snowflake,str) and not SNOWFLAKE_REGEX.search(snowflake)
-    
+
+#do i even need to say that this is a util? this is a util
+def splitArgs(input):
+    optionRegex = re.compile(' -[a-zA-Z]+')
+    if(not re.search(optionRegex, input)):
+        return [input]
+    spaceSplit = re.split(r' ', input)
+    optionSplitArgs = optionRegex.split(input)
+    optionSplitArgs = [arg.strip() for arg in optionSplitArgs]
+    flagsRegex = re.compile('-')
+    rawFlags = list(filter(flagsRegex.match, spaceSplit))
+    joinedFlags = ''.join(rawFlags)
+    rawFlags = re.split(flagsRegex, joinedFlags)
+    joinedFlags = ''.join(rawFlags)
+    flags = re.split(r'', joinedFlags)
+    flags.pop()  # remove tailing empty string
+    flags.pop(0) # remove leading empty string
+    flags = [flag.lower() for flag in flags]
+    return [optionSplitArgs, flags]
     
 @bot.command(desc="Displays build info")
 async def build_info(ctx, file_override=None):
