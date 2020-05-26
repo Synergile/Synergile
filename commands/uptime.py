@@ -1,4 +1,5 @@
-import discord, datetime, time
+import datetime, time
+import discord
 from discord.ext import commands
 
 #this lets you base your import from the Synergile folder to get to the util directory
