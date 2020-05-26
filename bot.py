@@ -178,7 +178,7 @@ async def leave(ctx):
     vc = ctx.guild.voice_client   
     await vc.disconnect()
 
-@bot.command(aliases='p')
+@bot.command(aliases=['p'])
 async def play(ctx, url: str):
     song_there = os.path.isfile("song.mp3")
     try:
@@ -305,6 +305,11 @@ def splitArgs(input):
     flags.pop(0) # remove leading empty string
     flags = [flag.lower() for flag in flags]
     return [optionSplitArgs, flags]
+
+#replace occurances of a substring from the back
+def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
     
 @bot.command(desc="Displays build info")
 async def build_info(ctx, file_override=None):
@@ -317,6 +322,15 @@ async def build_info(ctx, file_override=None):
         file = file_override
         with open(file, 'r') as f:
             await ctx.send(f.readlines())
+            
+for cog in os.listdir(".\\commands"):#path
+	if cog.endswith(".py"):
+		try:
+			cog = f"commands.{cog.replace('.py', '')}"
+			bot.load_extension(cog)
+		except Exception as e:
+			print(f"{cog} cannot be loaded:")
+			raise e
 
 with open('config.config', 'r') as f:
     tok = f.readline()
