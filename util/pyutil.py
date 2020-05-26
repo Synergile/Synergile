@@ -1,5 +1,6 @@
 import asyncio
 import re
+from .stringbuilder import StringBuilder
 OPTION_REGEX = re.compile(' -[a-zA-Z]+')
 FLAGS_REGEX = re.compile('-')
 SPACE_REGEX = re.compile(' ')
@@ -11,14 +12,15 @@ def rreplace(s, old, new, occurrence):
     return new.join(li)
 
 #efficiently build a string of variable length when multiple members are found following a query
-def buildMultiMatchString(command_prefix,command,mem,member):
-    strBuilder=f'Found {len(mem)} possible matches for "{member}":```'
-    strBuilder=''.join([strBuilder, ''.join(f'\n{index+1}. {memMatch}' for index,memMatch in enumerate(mem))])
-    strBuilder+=f'```'
+def buildMultiMatchString(command_prefix,command,mem,member): 
+    strBuilder = StringBuilder(f'Found {len(mem)} possible matches for "{member}":```')
+    for index,memMatch in enumerate(mem):
+        strBuilder.append(f'\n{index+1}. {memMatch}')
+    strBuilder.append(f'```')
     if len(mem)==5:
-        strBuilder+=f'\n(number of matches shown is capped at 5, there may or may not be more)'
-    strBuilder+=f'\nTry using the {command_prefix}{command} command again with a more specific search term!'
-    return strBuilder
+        strBuilder.append(f'\n(number of matches shown is capped at 5, there may or may not be more)')
+    strBuilder.append(f'\nTry using the {command_prefix}{command} command again with a more specific search term!')
+    return strBuilder.to_string()
 
 #split arguments into seperate (-x) flags where x can be any letter or sequence of letters
 #each flag will be seperated even if given as a single string and returned as a list
