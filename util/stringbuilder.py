@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from io import StringIO
 
 '''
 MIT License
@@ -24,6 +23,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
+from io import StringIO
+
 class StringBuilder:
     '''Provides efficient and performant concatenation of strings'''
     
