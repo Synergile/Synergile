@@ -151,7 +151,7 @@ async def ban(ctx,*, member=None, reason = "No reason provided"):
             pass
         if indexReason > -1:
             try:
-                if args[0][indexReason] is not '':
+                if args[0][indexReason] != '':
                     reason = args[0][indexReason]
             except Exception:
                 await ctx.send('An error occurred while attempting to parse arguments')
@@ -317,6 +317,11 @@ async def build_info(ctx, file_override=None):
         file = file_override
         with open(file, 'r') as f:
             await ctx.send(f.readlines())
+
+@bot.command(desc="Displays shard info")
+async def sh_info(ctx):
+    await ctx.send(f"Sent shard info to your DMs, <@{ctx.author.id}>")
+    await ctx.author.send(f"Current Shard Latency: {bot.latency}\nShard IDs: {bot.shard_ids}\nAverage Shards Latency: {bot.latencies}")
 
 with open('config.config', 'r') as f:
     tok = f.readline()
