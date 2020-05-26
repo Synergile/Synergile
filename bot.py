@@ -11,7 +11,7 @@ import os
 import math
 import random
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
-bot = commands.Bot(command_prefix='$', case_insensitive=True, description=desc)
+bot = commands.AutoShardedBot(command_prefix='$', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 SNOWFLAKE_REGEX = re.compile('\D') #compile regular expression matching all characters that aren't digits
