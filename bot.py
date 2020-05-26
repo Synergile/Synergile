@@ -21,12 +21,14 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
     print (f"Bot online")
     
+'''
 #kind of not a fan of this
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error,commands.errors.CommandNotFound):
         return
     await ctx.send("An error occured!\n```{}```".format(error))
+'''
 
 @bot.command(desc="Gets information about a user and outputs it")
 async def profile(ctx, *, member= None):
