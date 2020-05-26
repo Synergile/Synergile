@@ -59,5 +59,3 @@ class StringBuilder:
     def len(self)-> int:
         '''Returns the length of the string currently'''
         return len(self.file_str.getvalue())
-        
-        
