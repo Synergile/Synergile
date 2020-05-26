@@ -7,7 +7,7 @@ import youtube_dl
 import os
 import random
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.Bot(command_prefix='$', case_insensitive=True, description=desc)
+bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
