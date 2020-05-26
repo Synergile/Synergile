@@ -8,6 +8,7 @@ from os import path
 sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )
 
 from Synergile.util.pyutil import rreplace
+from Synergile.util.stringbuilder import StringBuilder
 
 
 start_time = time.time()
@@ -24,20 +25,21 @@ class Uptime(commands.Cog, name='Uptime'):
 		hours, remainder = divmod(int(delta.total_seconds()), 3600)
 		minutes, seconds = divmod(remainder, 60)
 		days, hours = divmod(hours, 24)
-		uptime_stamp = ''
+		string_builder = StringBuilder()
 		if days:
-			uptime_stamp += f'**{days}** {"day" if days==1 else "days"}, '
+			string_builder.append(f'**{days}** {"day" if days==1 else "days"}, ')
 		if hours:
-			uptime_stamp += f'**{hours}** {"hour" if hours==1 else "hours"}, '
+			string_builder.append(f'**{hours}** {"hour" if hours==1 else "hours"}, ')
 		if minutes:
-			uptime_stamp += f'**{minutes}** {"minute" if minutes==1 else "minutes"}, '
+			string_builder.append(f'**{minutes}** {"minute" if minutes==1 else "minutes"}, ')
 		if seconds:
-			uptime_stamp += f'**{seconds}** {"second" if seconds==1 else "seconds"}, '
-		uptime_stamp=rreplace(s=uptime_stamp, old=', ', new='', occurrence=1)
+			string_builder.append(f'**{seconds}** {"second" if seconds==1 else "seconds"}, ')
+		uptime_stamp = string_builder.to_string()
+		uptime_stamp = rreplace(s=uptime_stamp, old=', ', new='', occurrence=1)
 		if uptime_stamp.count(',') > 1:
-			uptime_stamp=rreplace(s=uptime_stamp, old=', ', new=', and ', occurrence=1)
-		elif uptime_stamp.count(',')==1:
-			uptime_stamp=rreplace(s=uptime_stamp, old=', ', new=' and ', occurrence=1)
+			uptime_stamp = rreplace(s=uptime_stamp, old=', ', new=', and ', occurrence=1)
+		elif uptime_stamp.count(',') == 1:
+			uptime_stamp = rreplace(s=uptime_stamp, old=', ', new=' and ', occurrence=1)
 		embed = discord.Embed(title='Uptime', description=f'The bot, {self.bot.user.name}, has been online for {uptime_stamp}')
 		await ctx.send(embed=embed)
 
