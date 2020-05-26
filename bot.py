@@ -178,7 +178,7 @@ async def leave(ctx):
     vc = ctx.guild.voice_client   
     await vc.disconnect()
 
-@bot.command(aliases='p')
+@bot.command(aliases=['p'])
 async def play(ctx, url: str):
     song_there = os.path.isfile("song.mp3")
     try:
