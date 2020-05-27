@@ -28,7 +28,7 @@ class Ban(commands.Cog, name='Ban'):
 		
 		if mem is None:
 			#return when input cannot be resolved
-			await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
+			await ctx.send('You must provide a valid user reference{}'.format(f': "{member}" could not be resolved to a user' if member is not None else ''))
 			return
 		
 		if(isinstance(mem, list)):
