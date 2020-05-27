@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'''
-MIT License
+'''MIT License
 
 Copyright (c) 2020 Walker Gray
 
@@ -27,13 +26,21 @@ SOFTWARE.
 from io import StringIO
 
 class StringBuilder:
-    '''Provides efficient and performant concatenation of strings'''
+    '''Provides efficient and performant concatenation of strings
+    The inspiriation for this class comes from the comparision of string concatenation methods found at https://waymoot.org/home/python_string/
+    This class serves as an encapsulation of 'method 5', in order to optimize both performance and memory usage
+    '''
     
     def __init__(self, initial_str=None):
         '''Construct a new StringBuilder. An initial value may optionally be provided'''
         self.file_str = StringIO()
         if initial_str is not None:
             self.file_str.write(str(initial_str))
+            
+    def __str__(self)-> str:
+        '''Returns a string representation of the data. Causes StrngBuilder to stringify when used in string contexts like str()'''
+        return self.file_str.getvalue()
+            
         
     @classmethod
     def from_list(cls, data: list):

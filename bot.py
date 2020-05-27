@@ -1,17 +1,13 @@
 import discord
 import asyncio
-import datetime
 from datetime import datetime
 from datetime import timezone
-import youtube_dl
 from discord.ext import commands
-from util.pyutil import buildMultiMatchString, splitArgs
-from util.discordutil import resolveMember, modActionLogEmbed
+import youtube_dl
 import os
-import math
 import random
-desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
-bot = commands.Bot(command_prefix='$', case_insensitive=True, description=desc)
+desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
+bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
@@ -30,45 +26,6 @@ async def on_command_error(ctx, error):
     await ctx.send("An error occured!\n```{}```".format(error))
 '''
 
-@bot.command(desc="Gets information about a user and outputs it")
-async def profile(ctx, *, member= None):
-    if member is None: 
-        #self profile
-        mem = ctx.guild.get_member(ctx.author.id)
-    else:
-        #resolve argument to a member
-        mem = await resolveMember(ctx, member)
-        
-    if mem is None:
-        #return when input cannot be resolved
-        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
-        return
-        
-    
-    #generate profile embed and send
-    if(isinstance(mem, list)):
-        usersFound = buildMultiMatchString(bot.command_prefix, 'profile', mem, member)
-        await ctx.send(usersFound)
-    else:
-        embed = profileEmbed(ctx.message.author, mem)
-        await ctx.send(embed=embed)
-
-#this should go in the Profile cog
-def profileEmbed(author, mem):
-    #avoiding magic numbers
-    DISCORD_EPOCH = 1420070400000 #first second of 2015
-    userMilliseconds = int(mem.id/math.pow(2,22) + DISCORD_EPOCH)
-    embed = discord.Embed(title= mem.nick or mem.name, color= 0x00ff00, timestamp = datetime.now(timezone.utc))
-    embed.set_thumbnail(url=mem.avatar_url)
-    embed.add_field(name= "Username+Discrim:", value = f'{mem.name}#{mem.discriminator}', inline=False)
-    embed.add_field(name= "Highest role:", value = mem.top_role.name, inline=False)
-    embed.add_field(name= 'Is Bot?', value = 'Yes' if mem.bot else 'No', inline=False)
-    embed.add_field(name= 'Joined Discord:', value = datetime.utcfromtimestamp(int(userMilliseconds//1000)).replace(microsecond=userMilliseconds%1000*1000), inline=False)
-    embed.add_field(name= 'Joined the server at:', value = mem.joined_at, inline=False)
-    embed.add_field(name= "ID:", value = mem.id, inline= False)
-    embed.set_footer(text= f"Requested by {author}", icon_url=author.avatar_url)
-    return embed
-
 #Fun Catergory
 @bot.command('8ball')
 async def _8ball(ctx, *, question):
@@ -85,86 +42,6 @@ async def choose(ctx, *choices: str):
 async def purge(ctx, amount):
     amount = int(amount)
     await ctx.channel.purge(limit=amount)
-    
-@bot.command(desc="Kick a member from the server")
-async def kick(ctx,*, member=None, reason="No reason provided"):
-    if member is None:
-        mem = None
-    else:
-        args = splitArgs(member)
-        if len(args)==1:
-            member = args[0]
-        else:
-            member = args[0][0]
-        #resolve argument to a member
-        mem = await resolveMember(ctx, member)
-    
-    if mem is None:
-        #return when input cannot be resolved
-        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
-        return
-    
-    if(isinstance(mem, list)):
-        usersFound = buildMultiMatchString(bot.command_prefix, 'kick', mem, member)
-        await ctx.send(usersFound)
-    else:
-        indexReason = -1
-        try:
-            indexReason = args[1].index('r') + 1
-        except Exception:
-            pass
-        if indexReason > -1:
-            try:
-                if args[0][indexReason] is not None:
-                    reason = args[0][indexReason]
-            except Exception:
-                await ctx.send('An error occurred while attempting to parse arguments')
-                return
-        try:
-            await ctx.guild.kick(mem, reason=reason)
-            await ctx.guild.get_channel(713131470625046549).send(embed=modActionLogEmbed('Kicked',mem,reason,ctx.author))
-        except Exception:
-            await ctx.send('An unknown error occured. Please try again later')
-
-@bot.command(desc="Ban a member from the server")
-async def ban(ctx,*, member=None, reason = "No reason provided"):
-    if member is None:
-        mem = None
-    else:
-        args = splitArgs(member)
-        if len(args)==1:
-            member = args[0]
-        else:
-            member = args[0][0]
-        #resolve argument to a member
-        mem = await resolveMember(ctx, member)
-    
-    if mem is None:
-        #return when input cannot be resolved
-        await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
-        return
-    
-    if(isinstance(mem, list)):
-        usersFound = buildMultiMatchString(bot.command_prefix, 'ban', mem, member)
-        await ctx.send(usersFound)
-    else:
-        indexReason = -1
-        try:
-            indexReason = args[1].index('r') + 1
-        except Exception:
-            pass
-        if indexReason > -1:
-            try:
-                if args[0][indexReason] is not '':
-                    reason = args[0][indexReason]
-            except Exception:
-                await ctx.send('An error occurred while attempting to parse arguments')
-                return
-        try:
-            await ctx.guild.ban(mem, reason=reason)
-            await ctx.guild.get_channel(713131470625046549).send(embed=modActionLogEmbed('Banned',mem,reason,ctx.author))
-        except Exception:
-            await ctx.send('An unknown error occured. Please try again later')
 
 
 #music

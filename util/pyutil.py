@@ -1,4 +1,3 @@
-import asyncio
 import re
 from .stringbuilder import StringBuilder
 OPTION_REGEX = re.compile(' -[a-zA-Z]+')
