@@ -10,6 +10,16 @@ from discord.ext import tasks
 import os
 import math
 import random
+import logging
+from io import StringIO
+logging.basicConfig(level=logging.INFO)
+#stream = StringIO()
+#handler = logging.StreamHandler(stream)
+#log = logging.getLogger('mylogger')
+#log.setLevel(logging.INFO)
+#for handler in log.handlers: 
+#      log.removeHandler(handler)
+#log.addHandler(handler)
 desc= "Moderation bot engineered by CodeWritten, wakfi, and jedi3"
 bot = commands.AutoShardedBot(command_prefix='$', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
@@ -21,6 +31,12 @@ SNOWFLAKE_REGEX = re.compile('\D') #compile regular expression matching all char
 async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
     print (f"Bot online")
+
+#@bot.event
+#async def on_message(ctx):
+#    channel = bot.get_channel(714784856000692306)
+#    handler.flush()
+#    await channel.send(f'New Log Entry (\nCommand = {stream.getvalue()}')
 
 @bot.event
 async def on_command_error(ctx, error):
