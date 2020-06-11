@@ -25,13 +25,6 @@ async def on_command_error(ctx, error):
     await ctx.send("An error occured!\n```{}```".format(error))
 '''
 
-#Moderation
-@bot.command(desc="Purges a number of messages from the channel")
-async def purge(ctx, amount):
-    amount = int(amount)
-    await ctx.channel.purge(limit=amount)
-
-
 #music
 players = {}
 
