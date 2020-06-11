@@ -97,10 +97,6 @@ async def help(ctx):
     await ctx.send(embed=embed)
 
 #other
-@bot.command(desc="Says pong!")
-async def ping(ctx):
-    await ctx.send('Pong! {} ms'.format(bot.latency*1000))
-    
 @bot.command(desc="Displays build info")
 async def build_info(ctx, file_override=None):
     if file_override is None:
