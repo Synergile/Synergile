@@ -1,16 +1,10 @@
+import math
 import discord
 from discord.ext import commands
 from datetime import datetime
 from datetime import timezone
-import math
-
-#this lets you base your import from the Synergile folder to get to the util directory
-import sys
-from os import path
-sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )
-
-from Synergile.util.pyutil import buildMultiMatchString
-from Synergile.util.discordutil import resolveMember
+from util.pyutil import buildMultiMatchString
+from util.discordutil import resolveMember
 
 class Profile(commands.Cog, name='Profile'):
 	def __init__(self, bot):

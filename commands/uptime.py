@@ -1,14 +1,14 @@
 import datetime, time
 import discord
 from discord.ext import commands
-
+'''
 #this lets you base your import from the Synergile folder to get to the util directory
 import sys
 from os import path
-sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )
+sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )'''
 
-from Synergile.util.pyutil import rreplace
-from Synergile.util.stringbuilder import StringBuilder
+from util.pyutil import rreplace
+from util.stringbuilder import StringBuilder
 
 
 start_time = time.time()
