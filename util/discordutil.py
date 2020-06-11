@@ -44,3 +44,15 @@ def modActionLogEmbed(action,member,reason,issuer):
     embed = discord.Embed(colour = discord.Colour.red(), description = f'{action} {member.mention} with reason: {reason}', timestamp = datetime.now(timezone.utc))
     embed.set_footer(text= f"Issued by {issuer}({issuer.id})", icon_url=issuer.avatar_url)
     return embed
+    
+def find_command(bot,commandName):
+	if(commandName is not None):
+		for command in bot.walk_commands():
+			if(command.name == commandName):
+				return command.name
+			if(command.aliases is not None):
+				for alias in command.aliases:
+					if(alias == commandName):
+						return command.name
+	return None
+
