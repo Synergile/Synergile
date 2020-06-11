@@ -27,11 +27,6 @@ async def on_command_error(ctx, error):
 '''
 
 #Fun Catergory
-@bot.command('8ball')
-async def _8ball(ctx, *, question):
-  response = ['Yes.', 'No.']
-  await ctx.send(f'Question: {question} \nAnswer: {random.choice(response)}')
-
 @bot.command()
 async def choose(ctx, *choices: str):
     """Chooses between multiple choices."""
