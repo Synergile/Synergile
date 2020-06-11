@@ -95,19 +95,6 @@ async def help(ctx):
     embed.add_field(name=f'{bot.command_prefix}ban <member resolvable>', value='Bans a member from the server', inline=False)
     embed.set_footer(text= f"Requested by {author}", icon_url=author.avatar_url)    
     await ctx.send(embed=embed)
-
-#other
-@bot.command(desc="Displays build info")
-async def build_info(ctx, file_override=None):
-    if file_override is None:
-        file= 'buildinfo.conf'
-        with open(file, 'r') as f:
-            await ctx.send(f.readlines())
-
-    else:
-        file = file_override
-        with open(file, 'r') as f:
-            await ctx.send(f.readlines())
             
 for cog in os.listdir(".\\commands"):#path
 	if cog.endswith(".py"):
