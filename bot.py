@@ -5,7 +5,6 @@ from datetime import timezone
 from discord.ext import commands
 import youtube_dl
 import os
-import random
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
 bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
 bot.remove_command('help') #removing the default help cmd
@@ -25,12 +24,6 @@ async def on_command_error(ctx, error):
         return
     await ctx.send("An error occured!\n```{}```".format(error))
 '''
-
-#Fun Catergory
-@bot.command()
-async def choose(ctx, *choices: str):
-    """Chooses between multiple choices."""
-    await ctx.send(random.choice(choices))
 
 #Moderation
 @bot.command(desc="Purges a number of messages from the channel")
