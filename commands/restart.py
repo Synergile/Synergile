@@ -10,7 +10,7 @@ class Restart(commands.Cog, name='Restart'):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command(desc="Restart the bot")
+	@commands.command(description="Restart the bot")
 	async def restart(self,ctx):
 		await self.bot.change_presence(status=discord.Status.offline)
 		await ctx.send(f"Restarting...")

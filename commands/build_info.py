@@ -5,7 +5,7 @@ class Build_info(commands.Cog, name='Build_info'):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command(desc="Displays build info")
+	@commands.command(description="Displays build info")
 	async def build_info(self,ctx,file_override=None):
 		if file_override is None:
 			file= 'buildinfo.conf'

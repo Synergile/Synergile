@@ -6,8 +6,8 @@ class UnloadCommand(commands.Cog, name='UnloadCommand'):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command(desc="Unload a command", aliases=['ulc'])
-	async def unloadCommand(self,ctx,*,input):
+	@commands.command(description="Unload a command", aliases=['ulc'],usage='<commandName>')
+	async def unloadCommand(self,ctx,*,input=None):
 		if(input is None):
 			await ctx.send('You must provide a command name or alias')
 			return

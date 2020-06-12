@@ -5,8 +5,8 @@ class LoadCommand(commands.Cog, name='LoadCommand'):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command(desc="Load a command", aliases=['ldc'])
-	async def loadCommand(self,ctx,*,commandName):
+	@commands.command(description="Load a command", aliases=['ldc'],usage='<commandName>')
+	async def loadCommand(self,ctx,*,commandName=None):
 		if(commandName is None):
 			await ctx.send('You must provide a command name or alias')
 			return

@@ -10,8 +10,8 @@ class Profile(commands.Cog, name='Profile'):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command(desc="Gets information about a user and outputs it")
-	async def profile(self, ctx, *, member= None):
+	@commands.command(description="Gets information about a user and outputs it",usage='[user]')
+	async def profile(self, ctx, *, member=None):
 		if member is None: 
 			#self profile
 			mem = ctx.guild.get_member(ctx.author.id)

@@ -7,7 +7,7 @@ class __8ball(commands.Cog, name='8ball'):
 		self.bot = bot
 		self.response = ['Yes', 'No']
 	
-	@commands.command(name='8ball',desc="Answers a yes or no question")
+	@commands.command(name='8ball',description="Answers a yes or no question",usage='<question>')
 	async def _8ball(self,ctx,*,question=None):
 		if(question is not None):
 			await ctx.send(f'Question: {question} \nAnswer: {random.choice(self.response)}')

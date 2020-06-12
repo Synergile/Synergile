@@ -7,7 +7,7 @@ class Choose(commands.Cog, name='Choose'):
 		self.bot = bot
 		self.response = ['Yes', 'No']
 	
-	@commands.command(name='choose',desc="Chooses between multiple choices.")
+	@commands.command(description="Chooses between multiple choices")
 	async def choose(self, ctx, *choices: str):
 		if(choices is not None and len(choices) > 1):
 			await ctx.send(random.choice(choices))

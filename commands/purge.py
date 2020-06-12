@@ -6,7 +6,7 @@ class Purge(commands.Cog, name='Purge'):
 		self.bot = bot
 		self.response = ['Yes', 'No']
 	
-	@commands.command(name='purge',desc="Purges a number of messages from the channel")
+	@commands.command(name='purge',description="Purges a number of messages from the channel",usage='<amount>')
 	async def purge(self,ctx,amount=None):
 		if(amount is not None):
 			amount = int(amount) + 1

@@ -1,11 +1,6 @@
 import datetime, time
 import discord
 from discord.ext import commands
-'''
-#this lets you base your import from the Synergile folder to get to the util directory
-import sys
-from os import path
-sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )'''
 
 from util.pyutil import rreplace
 from util.stringbuilder import StringBuilder
@@ -18,7 +13,7 @@ class Uptime(commands.Cog, name='Uptime'):
 	def __init__(self, bot):
 		self.bot = bot
     
-	@commands.command(desc='uptime')
+	@commands.command(description='Amount of time the bot has been connected to Discord since establishing this connection')
 	async def uptime(self, ctx : commands.Context):
 		now = datetime.datetime.utcnow()
 		delta = now - start_time
