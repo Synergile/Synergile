@@ -1,22 +1,17 @@
 import datetime, time
 import discord
 from discord.ext import commands
-
 from util.pyutil import rreplace
 from util.stringbuilder import StringBuilder
-
-
-start_time = time.time()
-start_time = datetime.datetime.utcnow()
 
 class Uptime(commands.Cog, name='Uptime'):
 	def __init__(self, bot):
 		self.bot = bot
-    
+	
 	@commands.command(description='Amount of time the bot has been connected to Discord since establishing this connection')
 	async def uptime(self, ctx : commands.Context):
 		now = datetime.datetime.utcnow()
-		delta = now - start_time
+		delta = now - self.bot.readyAt
 		hours, remainder = divmod(int(delta.total_seconds()), 3600)
 		minutes, seconds = divmod(remainder, 60)
 		days, hours = divmod(hours, 24)
@@ -35,7 +30,7 @@ class Uptime(commands.Cog, name='Uptime'):
 			uptime_stamp = rreplace(s=uptime_stamp, old=', ', new=', and ', occurrence=1)
 		elif uptime_stamp.count(',') == 1:
 			uptime_stamp = rreplace(s=uptime_stamp, old=', ', new=' and ', occurrence=1)
-		embed = discord.Embed(title='Uptime', description=f'The bot, {self.bot.user.name}, has been online for {uptime_stamp}')
+		embed = discord.Embed(title='Uptime', description=f'I have been online for {uptime_stamp}')
 		await ctx.send(embed=embed)
 
 def setup(bot):
