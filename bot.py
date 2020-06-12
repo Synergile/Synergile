@@ -4,8 +4,7 @@ from discord.ext import commands
 import youtube_dl
 import os
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.Bot(command_prefix='!', case_insensitive=True, description=desc)
-bot.remove_command('help') #removing the default help cmd
+bot = commands.Bot(command_prefix='!', help_command=None, case_insensitive=True, description=desc)
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
 
