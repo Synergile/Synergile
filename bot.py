@@ -1,7 +1,5 @@
 import discord
 import asyncio
-from datetime import datetime
-from datetime import timezone
 from discord.ext import commands
 import youtube_dl
 import os
@@ -82,19 +80,6 @@ async def play(ctx, url: str):
     nname = name.rsplit("-", 2)
     await ctx.send(f"Playing: {nname[0]}")
     print("playing\n")
-    
-#help
-@bot.command(pass_context=True)
-async def help(ctx):
-    author = ctx.message.author
-    embed = discord.Embed(colour = discord.Colour.orange(), title = 'Help', timestamp = datetime.now(timezone.utc),
-        description='Syntax note: A "member resolvable" is a user mention, user ID, or a username fragment that can be resolved to a single user in the server (which can be an entire username)')
-    embed.add_field(name=f'{bot.command_prefix}ping', value='Returns Pong!', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}profile [member resolvable]', value='Display information about a given user', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}kick <member resolvable>', value='Kicks a member from the server', inline=False)
-    embed.add_field(name=f'{bot.command_prefix}ban <member resolvable>', value='Bans a member from the server', inline=False)
-    embed.set_footer(text= f"Requested by {author}", icon_url=author.avatar_url)    
-    await ctx.send(embed=embed)
             
 for cog in os.listdir(".\\commands"):#path
 	if cog.endswith(".py"):
