@@ -4,11 +4,15 @@ OPTION_REGEX = re.compile(' -[a-zA-Z]+')
 FLAGS_REGEX = re.compile('-')
 SPACE_REGEX = re.compile(' ')
 EMPTY_REGEX = re.compile('')
+NUMERIC_REGEX = re.compile('\d+(?:\.\d+)?')
 
 #replace occurances of a substring from the back
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
+    
+def isNaN(value):
+	return not NUMERIC_REGEX.fullmatch(value)
 
 #efficiently build a string of variable length when multiple members are found following a query
 def buildMultiMatchString(command_prefix,command,mem,member): 

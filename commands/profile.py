@@ -1,23 +1,17 @@
+import math
 import discord
 from discord.ext import commands
 from datetime import datetime
 from datetime import timezone
-import math
-
-#this lets you base your import from the Synergile folder to get to the util directory
-import sys
-from os import path
-sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )
-
-from Synergile.util.pyutil import buildMultiMatchString
-from Synergile.util.discordutil import resolveMember
+from util.pyutil import buildMultiMatchString
+from util.discordutil import resolveMember
 
 class Profile(commands.Cog, name='Profile'):
 	def __init__(self, bot):
 		self.bot = bot
 	
-	@commands.command(desc="Gets information about a user and outputs it")
-	async def profile(self, ctx, *, member= None):
+	@commands.command(description="Gets information about a user and outputs it",usage='[user]')
+	async def profile(self, ctx, *, member=None):
 		if member is None: 
 			#self profile
 			mem = ctx.guild.get_member(ctx.author.id)

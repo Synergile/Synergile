@@ -1,19 +1,13 @@
 from discord.ext import commands
-
-#this lets you base your import from the Synergile folder to get to the util directory
-import sys
-from os import path
-sys.path.append( path.dirname( path.dirname( path.dirname(path.abspath(__file__)) ) ) )
-
-from Synergile.util.pyutil import buildMultiMatchString, splitArgs
-from Synergile.util.discordutil import resolveMember, modActionLogEmbed
+from util.pyutil import buildMultiMatchString, splitArgs
+from util.discordutil import resolveMember, modActionLogEmbed
 
 class Ban(commands.Cog, name='Ban'):
 	def __init__(self, bot):
 		self.bot = bot
 		self.modLogChannelID=713131470625046549 #will be guild lookup for value in database
 		
-	@commands.command(desc="Ban a member from the server")
+	@commands.command(description="Ban a member from the server", usage='<member> [-r <reason>]')
 	async def ban(self, ctx,*, member=None, reason = "No reason provided"):
 		if member is None:
 			mem = None
