@@ -8,7 +8,6 @@ import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
 
-
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 class VoiceError(Exception):
@@ -483,9 +482,6 @@ class Music(commands.Cog):
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
                 raise commands.CommandError('Bot is already in a voice channel.')
-
-
-bot = commands.Bot('music.', description='Yet another music bot.')
 
 
 def setup(bot):
