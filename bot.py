@@ -2,7 +2,6 @@ import discord
 import asyncio
 from discord.ext import commands
 from datetime import datetime
-import youtube_dl
 import os
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
 bot = commands.Bot(command_prefix='!', help_command=None, case_insensitive=True, description=desc)
