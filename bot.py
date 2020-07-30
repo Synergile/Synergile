@@ -4,7 +4,7 @@ from discord.ext import commands
 from datetime import datetime
 import os
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.Bot(command_prefix='!', help_command=None, case_insensitive=True, description=desc)
+bot = commands.AutoShardedBot(command_prefix='!', case_insensitive=True, description=desc)
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
 #add readyAt property to bot class
