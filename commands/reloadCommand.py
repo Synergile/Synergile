@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from util.discordutil import find_command
+from util.parseFlags import parseFlags
 
 class ReloadCommand(commands.Cog, name='ReloadCommand'):
 	def __init__(self, bot):
@@ -11,9 +12,12 @@ class ReloadCommand(commands.Cog, name='ReloadCommand'):
 		if(input is None):
 			await ctx.send('You must provide a command name or alias')
 			return
-		commandName = find_command(self.bot,input)
+		pargs = parseFlags(input,{'force':'f','forced':'-force'},truthy=True,allowDoublePrefix=True)
+		cmd = ' '.join(pargs['args'])
+		force = pargs['force'] or pargs['forced']
+		commandName = find_command(self.bot,cmd) if not force else cmd
 		if(commandName is None):
-			return await ctx.send(f'Reload failed: Could not find command or alias `{input}`')
+			return await ctx.send(f'Reload failed: Could not find command or alias `{cmd}`')
 		try:
 			self.bot.reload_extension(f'commands.{commandName}')
 			await ctx.send(f'Successfully reloaded `{commandName}`')

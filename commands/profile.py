@@ -3,8 +3,8 @@ import discord
 from discord.ext import commands
 from datetime import datetime
 from datetime import timezone
-from util.pyutil import buildMultiMatchString
-from util.discordutil import resolveMember
+from util.parseFlags import parseFlags
+from util.discordutil import resolveMember,buildMultiMatchString
 
 class Profile(commands.Cog, name='Profile'):
 	def __init__(self, bot):
@@ -12,13 +12,15 @@ class Profile(commands.Cog, name='Profile'):
 	
 	@commands.command(description="Gets information about a user and outputs it",usage='[user]')
 	async def profile(self, ctx, *, member=None):
-		if member is None: 
+		if member is None:
 			#self profile
 			mem = ctx.guild.get_member(ctx.author.id)
 		else:
 			#resolve argument to a member
-			mem = await resolveMember(ctx, member)
-			
+			pargs = parseFlags(member, {'strict':'-s', 'stricts':'--strict', 'sensitive':'-c', 'sensitives':'--case-sensitive'}, truthy=True, disableAutoPrefix=True)
+			strict = pargs['strict'] or pargs['stricts']
+			sensitive = pargs['sensitive'] or pargs['sensitives']
+			mem = await resolveMember(ctx, ' '.join(pargs['args']), sensitive=sensitive, strict=strict)
 		if mem is None:
 			#return when input cannot be resolved
 			await ctx.send(f'You must provide a valid user reference: "{member}" could not be resolved to a user')
@@ -33,7 +35,6 @@ class Profile(commands.Cog, name='Profile'):
 			embed = self.profileEmbed(ctx.message.author, mem)
 			await ctx.send(embed=embed)
 
-	#this should go in the Profile cog
 	def profileEmbed(self, author, mem):
 		#avoiding magic numbers
 		DISCORD_EPOCH = 1420070400000 #first second of 2015

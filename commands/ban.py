@@ -1,6 +1,6 @@
 from discord.ext import commands
-from util.pyutil import buildMultiMatchString, splitArgs
-from util.discordutil import resolveMember, modActionLogEmbed
+from util.pyutil import splitArgs
+from util.discordutil import resolveMember, modActionLogEmbed, buildMultiMatchString
 
 class Ban(commands.Cog, name='Ban'):
 	def __init__(self, bot):
