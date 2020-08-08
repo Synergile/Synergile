@@ -9,11 +9,10 @@ class beta():
     def beta_getter(self, auth):
         db, crsr = beta().db_getter()
         rffa = []
-        for x in crsr.fetchall():
-            rffa.append(x)
-        if auth in rffa:
-            return True
-        else:
-            print(f'NOT A BETA TESTER: {auth}')
-            return False
-
+        tester_data = crsr.fetchall()
+        for x in tester_data:
+            if x == auth:
+                return True
+            else:
+                return False
+                print ('NOT A TESTER')
