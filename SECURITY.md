@@ -5,4 +5,4 @@ Versions Supported (* means this version is unreleased)
 2.x Alpha-Final
 3.0-5 Alpha-
 
-Report Security Vulnerabilities by Reporting an issue and putting [SV] in the title, one of our GA (Git Admins) will assign it the P0 Label and inform the devs
+Email synergile.developers+security@gmail.com with details of the security vulnerability. If we deem the vulnerability to be a high risk, we will shut the bot down until we fix the issue
