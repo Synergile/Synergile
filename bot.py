@@ -29,7 +29,7 @@ async def on_command_error(ctx, error):
 	await ctx.send("An error occured!\n```{}```".format(error))
 '''
 		
-for cog in os.listdir(".\\commands"):#path
+for cog in os.listdir(f".{os.path.sep}commands"):#path
 	if cog.endswith(".py"):
 		try:
 			cog = f"commands.{cog.replace('.py', '')}"
