@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/autodeploy'
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
@@ -15,4 +15,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: cd ${{ secrets.PROJECT_PATH }} && git pull origin master && pm2 restart bot.py
+          script: cd ${{ secrets.PROJECTPATH }} && git pull origin master && pm2 restart bot.py
