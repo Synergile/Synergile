@@ -15,4 +15,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: cd ${{ secrets.PROJECT_PATH }} && git pull origin master && pm2 restart bot.py
+          script: cd ${{ secrets.PROJECTPATH }} && git pull origin master && pm2 restart bot.py
