@@ -11,4 +11,4 @@ verify_ssl = true
 youtube-dl = "~=2020.7.28"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
