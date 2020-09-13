@@ -13,7 +13,6 @@ def readyAtGetter(self):
 def readyAtSetter(self,value):
 	self._readyAt = value
 commands.Bot.readyAt = property(readyAtGetter, readyAtSetter)
-
 @bot.event
 async def on_ready():
 	await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
@@ -28,8 +27,14 @@ async def on_command_error(ctx, error):
 		return
 	await ctx.send("An error occured!\n```{}```".format(error))
 '''
-		
-for cog in os.listdir(".\\commands"):#path
+
+curdir = os.getcwd()
+curdir.split('\\')
+if "Synergile" not in curdir:
+	os.chdir("Synergile")
+else:
+	pass
+for cog in os.listdir(f"{os.getcwd()}{os.path.sep}commands"):#path
 	if cog.endswith(".py"):
 		try:
 			cog = f"commands.{cog.replace('.py', '')}"
