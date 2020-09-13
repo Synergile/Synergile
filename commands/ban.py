@@ -1,3 +1,4 @@
+from discord import Forbidden
 from discord.ext import commands
 from util.pyutil import buildMultiMatchString, splitArgs
 from util.discordutil import resolveMember, modActionLogEmbed
@@ -45,7 +46,13 @@ class Ban(commands.Cog, name='Ban'):
 				await ctx.guild.ban(mem, reason=reason)
 				if self.modLogChannelID is not None:
 					await ctx.guild.get_channel(self.modLogChannelID).send(embed=modActionLogEmbed('Banned',mem,reason,ctx.author))
-			except Exception:
+			except Forbidden as e:
+				errMessage = str(e)
+				if 'error code: 50013' in errMessage:
+					await ctx.send("I don't have permission to do that!")
+			except Exception as e:
+				print('encountered an unknown error in kick command:')
+				print(repr(e))
 				await ctx.send('An unknown error occured. Please try again later')
 
 def setup(bot):
