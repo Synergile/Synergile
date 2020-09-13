@@ -3,8 +3,31 @@ import asyncio
 from discord.ext import commands
 from datetime import datetime
 import os
+cfgInDir = False
+foundPrefix = False
+for i in os.listdir():
+	if i == "config.config":
+		cfgInDir = True
+		with open('config.config', 'r') as config:
+			for line in config:
+				splitline = line.split(':')
+				if splitline[0].lower() == "prefix":
+					prefix = splitline[1]
+					foundPrefix = True
+if not cfgInDir:
+	os.chdir("Synergile")
+	with open('config.config', 'r') as config:
+		for line in config:
+			splitline = line.split(':')
+			if splitline[0].lower() == "prefix":
+				prefix = splitline[1]
+				foundPrefix = True
+if not foundPrefix:
+	print ("Couldn't find a prefix")
+	raise LookupError("Tried to find 'prefix' in config.config, failed to do so")
+
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.AutoShardedBot(command_prefix='!', help_command=None, case_insensitive=True, description=desc)
+bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc)
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
 #add readyAt property to bot class
@@ -44,6 +67,8 @@ for cog in os.listdir(f"{os.getcwd()}{os.path.sep}commands"):#path
 			raise e
 
 with open('config.config', 'r') as f:
-	tok = f.readline()
-	tok.replace('\n', "")
-bot.run(tok)
+	for i in f:
+		splitted = i.split(':')
+		if splitted[0].lower() == "token":
+			token = splitted[1]
+bot.run(token)
