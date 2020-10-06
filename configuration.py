@@ -1,3 +1,4 @@
+import os
 def configuration():
     cfgInDir = False
     foundPrefix = False
