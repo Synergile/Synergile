@@ -12,3 +12,7 @@
   
 # Where we are at with it right now
  This project is still unreleased as of now, we still have some bugs to iron out and some features to be changed and added before we fully release the project
+ 
+# How to report an issue
+ Go over to the Issues tab, click New Issue, and describe the bug, and how to make the bug happen again (Steps to reproduce), please make sure to include as much detail as possible
+
