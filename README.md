@@ -1,8 +1,14 @@
-# Synergile
- This bot is a project engineered by CodeWritten, with help from Jedi3, Wakfi, and Napkins
+# About us
+ This project is engineered by CodeWritten, Jedi3, Wakfi, and Napkins, (little note from Code here: without you guys, this project wouldn't have taken off, you guys are awesome!)
 
-# Where stuff is
+# Where utils, commands, and other files of interest is
  If you are looking for most of the commands, find them in the commands folder, If you are looking for the utilities, find them in the util folder. Of course, the main file for the bot is bot.py
  
-# Stuff you should take a look at
- If you are looking do stuff around here, make sure to look at our [Code Of Conduct](https://github.com/Synergile/Synergile/blob/master/CODE_OF_CONDUCT.md)
+# If you wish to contribute, you should take a look at this
+ If you are looking to make contributions around here, make sure to look at our [Code Of Conduct](https://github.com/Synergile/Synergile/blob/master/CODE_OF_CONDUCT.md)
+ 
+ # Our goal with this project
+  We aim to make this bot an "all purposes" bot, for example, we already cover some forms of Moderation, and we have Music functionality, we plan to expand more upon the bot however
+  
+# Where we are at with it right now
+ This project is still unreleased as of now, we still have some bugs to iron out and some features to be changed and added before we fully release the project
