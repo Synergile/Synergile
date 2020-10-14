@@ -20,6 +20,10 @@ async def on_ready():
 	bot.readyAt = datetime.utcnow()
 	print (f"Bot online")
 	
+@bot.command(description="Shows some info about the bot")
+async def whoami(ctx):
+	await ctx.send ("I am Synergile, my owner is CodeWritten#4044")
+	
 '''
 #kind of not a fan of this
 @bot.event
