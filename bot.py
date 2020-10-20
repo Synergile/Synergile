@@ -4,6 +4,9 @@ from discord.ext import commands
 from datetime import datetime
 import os
 import configuration
+import ensure_path
+if os.getcwd() != ensure_path.send_path():
+        os.chdir(ensure_path.send_path())
 token, prefix = configuration.configuration()
 
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
