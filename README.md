@@ -7,7 +7,7 @@
 # If you wish to contribute, you should take a look at this
  If you are looking to make contributions around here, make sure to look at our [Code Of Conduct](https://github.com/Synergile/Synergile/blob/master/CODE_OF_CONDUCT.md)
  
- # Our goal with this project
+# Our goal with this project
   We aim to make this bot an "all purposes" bot, for example, we already cover some forms of Moderation, and we have Music functionality, we plan to expand more upon the bot however
   
 # Where we are at with it right now
