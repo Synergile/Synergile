@@ -15,3 +15,9 @@
  
 # How to report an issue
  Go over to the Issues tab, click New Issue, and describe the bug, and how to make the bug happen again (Steps to reproduce), please make sure to include as much detail as possible
+
+# Suggesting a new feature or change to an existing one
+ Head over to the Issues tab and create a new issue, and put (Suggestion) in the title, and in the description, tell us what you think should be added/changed
+
+# Reporting a security vulnerability
+ As of now we do not have a way to report security vulnerabilities, we are working on it though
