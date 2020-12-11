@@ -1,5 +1,5 @@
 # About us
- This project is engineered by CodeWritten, Jedi3, Wakfi, and Napkins, (little note from Code here: without you guys, this project wouldn't have taken off, you guys are awesome!)
+ This project is engineered by CodeWritten, Jedi3, Wakfi, and Napkins
 
 # Where utils, commands, and other files of interest are
  If you are looking for most of the commands, find them in the commands folder, If you are looking for the utilities, find them in the util folder. Of course, the main file for the bot is bot.py
