@@ -1,7 +1,7 @@
 # About us
  This project is engineered by CodeWritten, Jedi3, Wakfi, and Napkins, (little note from Code here: without you guys, this project wouldn't have taken off, you guys are awesome!)
 
-# Where utils, commands, and other files of interest is
+# Where utils, commands, and other files of interest are
  If you are looking for most of the commands, find them in the commands folder, If you are looking for the utilities, find them in the util folder. Of course, the main file for the bot is bot.py
  
 # If you wish to contribute, you should take a look at this
@@ -15,4 +15,3 @@
  
 # How to report an issue
  Go over to the Issues tab, click New Issue, and describe the bug, and how to make the bug happen again (Steps to reproduce), please make sure to include as much detail as possible
-
