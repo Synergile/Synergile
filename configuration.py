@@ -23,9 +23,10 @@ def configuration():
     	except IndexError as exc:
     		raise MissingTokenOrPrefix("Couldn't find the token and prefix in the config") from exc
     	else:
-    		token = configs.get("token")
-    		prefix = configs.get("prefix")
-    		if token is None or prefix is None:
-    			raise MissingTokenOrPrefix("Couldn't find the token and prefix in config") from KeyError
+    		try:
+    			token = configs["token"]
+    			prefix = configs.get["prefix"]
+    		except KeyError as exc:
+    			raise MissingTokenOrPrefix("Couldn't find the token and prefix in config") from exc
     		else:
     			return token, prefix
