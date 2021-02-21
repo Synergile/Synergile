@@ -36,7 +36,7 @@ class Ban(commands.Cog, name='Ban'):
 				pass
 			if indexReason > -1:
 				try:
-					if args[0][indexReason] != '':
+					if args[0][indexReason] is not '':
 						reason = args[0][indexReason]
 				except Exception:
 					await ctx.send('An error occurred while attempting to parse arguments')

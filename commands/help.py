@@ -29,7 +29,7 @@ class Help(commands.Cog, name='Help'):
 				if(count==25):
 					index+=1
 					count = 0
-				fieldstr = 'No description' if command.description == '' else command.description
+				fieldstr = 'No description' if command.description is '' else command.description
 				embeds[index].add_field(name=f'{self.bot.command_prefix}{command.name}', value=fieldstr, inline=False)
 				count+=1
 			for embed in embeds:
