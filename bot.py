@@ -10,7 +10,7 @@ if os.getcwd() != ensure_path.send_path():
 token, prefix = configuration.configuration()
 
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc, intents=discord.Intents.all())
+bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc)
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
 #add readyAt property to bot class
