@@ -1,0 +1,19 @@
+---
+name: "\U0001F41E Bug Report"
+about: Found something that's not working correctly?
+title: ''
+labels: bug report
+assignees: ''
+
+---
+
+## Short Description
+
+## Steps to Reproduce
+- 
+
+## Expected Result (how *should* it be behaving?)
+
+## Actual Result (what is the *current* behavior?)
+
+## Current Bot Version (run the `info` command and look at the footer)
