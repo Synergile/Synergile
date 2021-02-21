@@ -15,4 +15,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: cd ${{ secrets.PROJECTPATH }} && git pull origin master && pipenv install --dev --deploy --ignore-pipfile && pm2 restart 0
+          script: cd ${{ secrets.PROJECTPATH }} && git pull origin master && pipenv sync && pm2 restart 0
