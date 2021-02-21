@@ -25,7 +25,7 @@ def configuration():
     	else:
     		try:
     			token = configs["token"]
-    			prefix = configs.get["prefix"]
+    			prefix = configs["prefix"]
     		except KeyError as exc:
     			raise MissingTokenOrPrefix("Couldn't find the token and prefix in config") from exc
     		else:
