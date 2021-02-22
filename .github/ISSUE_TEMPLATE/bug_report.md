@@ -12,8 +12,8 @@ assignees: ''
 ## Steps to Reproduce
 - 
 
-## Expected Result (how *should* it be behaving?)
+## Expected Result (how *should* it behave?)
 
 ## Actual Result (what is the *current* behavior?)
 
-## Current Bot Version (run the `info` command and look at the footer)
+## Current Bot Version (run the `build_info` command)
