@@ -324,6 +324,11 @@ class Music(commands.Cog):
 
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
+        
+    @commands.command(name='now', aliases=['current', 'playing', 'nowplaying'])
+    async def _now(self, ctx: commands.Context):	           
+        """Displays the currently playing song."""	
+        await ctx.send(embed=ctx.voice_state.current.create_embed())
 
     @commands.command(name='pause')
     async def pause_(self, ctx):
