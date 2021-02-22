@@ -315,7 +315,7 @@ class Music(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='leave', aliases=['disconnect', 'quit'])
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(move_members=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
 
@@ -356,11 +356,11 @@ class Music(commands.Cog):
 
         if not vc or not vc.is_playing():
             return await ctx.send('I am not currently playing anything!', delete_after=20)
-        elif vc.is_paused():
+        if vc.is_paused():
             return
 
         vc.pause()
-        await ctx.send(f'**`{ctx.author}:`** Paused the song!')
+        await ctx.send(f'**`{ctx.author}:`** paused the song!')
 
     @commands.command(name='resume')
     async def resume_(self, ctx):
@@ -369,11 +369,11 @@ class Music(commands.Cog):
 
         if not vc or not vc.is_connected():
             return await ctx.send('I am not currently playing anything!', delete_after=20)
-        elif not vc.is_paused():
+        if not vc.is_paused():
             return
 
         vc.resume()
-        await ctx.send(f'**`{ctx.author}:`** Resumed the song!')
+        await ctx.send(f'**`{ctx.author}:`** resumed the song!')
 
     @commands.command(name='stop')
     async def stop_(self, ctx):
