@@ -3,8 +3,14 @@ import asyncio
 from discord.ext import commands
 from datetime import datetime
 import os
+import configuration
+import ensure_path
+if os.getcwd() != ensure_path.send_path():
+        os.chdir(ensure_path.send_path())
+token, prefix = configuration.configuration()
+
 desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.AutoShardedBot(command_prefix='!', help_command=None, case_insensitive=True, description=desc)
+bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc)
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
 #add readyAt property to bot class
@@ -13,7 +19,6 @@ def readyAtGetter(self):
 def readyAtSetter(self,value):
 	self._readyAt = value
 commands.Bot.readyAt = property(readyAtGetter, readyAtSetter)
-
 @bot.event
 async def on_ready():
 	await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
@@ -28,8 +33,14 @@ async def on_command_error(ctx, error):
 		return
 	await ctx.send("An error occured!\n```{}```".format(error))
 '''
-		
-for cog in os.listdir(".\\commands"):#path
+
+curdir = os.getcwd()
+curdir.split('\\')
+if "Synergile" not in curdir:
+	os.chdir("Synergile")
+else:
+	pass
+for cog in os.listdir(f"{os.getcwd()}{os.path.sep}commands"):#path
 	if cog.endswith(".py"):
 		try:
 			cog = f"commands.{cog.replace('.py', '')}"
@@ -38,7 +49,4 @@ for cog in os.listdir(".\\commands"):#path
 			print(f"{cog} cannot be loaded:")
 			raise e
 
-with open('config.config', 'r') as f:
-	tok = f.readline()
-	tok.replace('\n', "")
-bot.run(tok)
+bot.run(token)
