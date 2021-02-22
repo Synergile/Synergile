@@ -9,8 +9,10 @@ if os.getcwd() != ensure_path.send_path():
         os.chdir(ensure_path.send_path())
 token, prefix = configuration.configuration()
 
-desc= "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc)
+intents = discord.Intents()
+intents.value = 0x378b
+desc = "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
+bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc, intents=intents)
 #NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
 
 #add readyAt property to bot class
@@ -33,7 +35,6 @@ async def on_command_error(ctx, error):
 		return
 	await ctx.send("An error occured!\n```{}```".format(error))
 '''
-
 curdir = os.getcwd()
 curdir.split('\\')
 if "Synergile" not in curdir:
