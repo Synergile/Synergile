@@ -325,30 +325,6 @@ class Music(commands.Cog):
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
-    @commands.command(name='volume', aliases=['vol'])
-    async def change_volume(self, ctx, *, vol: float):
-        """Change the player volume.
-        Parameters
-
-        volume: float or int [Required]
-            The volume to set the player to in percentage. This must be between 1 and 100.
-        """
-        vc = ctx.voice_client
-
-        if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently connected to voice!', delete_after=20)
-
-        if not 0 < vol < 101:
-            return await ctx.send('Please enter a value between 1 and 100.')
-
-        player = self.get_player(ctx)
-
-        if vc.source:
-            vc.source.volume = vol / 100
-
-        player.volume = vol / 100
-        await ctx.send(f'**`{ctx.author}`**: Set the volume to **{vol}%**')
-
     @commands.command(name='pause')
     async def pause_(self, ctx):
         """Pause the currently playing song."""
