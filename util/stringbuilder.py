@@ -24,6 +24,7 @@ SOFTWARE.
 '''
 
 from io import StringIO
+from os import linesep
 
 class StringBuilder:
     '''Provides efficient and performant concatenation of strings
@@ -57,6 +58,12 @@ class StringBuilder:
     def append(self, data):
         '''Appends data to the StringBuilder. Accepts any value that str() can be called on. Returns self to enable successive chaining'''
         self.file_str.write(str(data))
+        return self
+    
+    def appendln(self, data=''):
+        '''Appends data to the StringBuilder and terminates with a line seperator. Accepts any value that str() can be called on. Returns self to enable successive chaining'''
+        self.file_str.write(str(data))
+        self.file_str.write(linesep)
         return self
 
     def to_string(self)-> str:
