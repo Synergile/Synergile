@@ -7,6 +7,12 @@ from discord.ext import commands
 import re
 SNOWFLAKE_REGEX = re.compile('\D') #compile regular expression matching all characters that aren't digits
 
+#decorator to check user permissions for command
+def check_permissions(**perms):
+    def predicate(ctx):
+        return ((discord.Permissions(**perms).value | 0x8) & ctx.message.author.permissions_in(ctx.channel).value) > 0x0
+    return commands.check(predicate)
+
 #should be a util when cog setup
 #resolve a string to a member object
 async def resolveMember(ctx, stringToResolve):

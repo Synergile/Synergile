@@ -7,6 +7,7 @@ import discord
 import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
+from util.discordutil import check_permissions
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -136,10 +137,10 @@ class Song:
 
     def create_embed(self):
         embed = (discord.Embed(title='Now playing',
-                               description='```css\n{0.source.title}\n```'.format(self),
+                               description='```\n{0.source.title}\n```'.format(self),
                                color=discord.Color.blurple())
                  .add_field(name='Duration', value=self.source.duration)
-                 .add_field(name='Requested by', value=self.requester.mention)
+                 .add_field(name='Requested by', value=(f'{self.requester.name}#{self.requester.discriminator}' if self.requester.nick is None else f'{self.requester.nick} ({self.requester.name}#{self.requester.discriminator})'))
                  .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
                  .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
                  .set_thumbnail(url=self.source.thumbnail))
@@ -214,6 +215,7 @@ class VoiceState:
             self.next.clear()
 
             if not self.loop:
+                self.current = None
                 # Try to get the next song within 3 minutes.
                 # If no song will be added to the queue in time,
                 # the player will disconnect due to performance
@@ -222,6 +224,7 @@ class VoiceState:
                     async with timeout(180):  # 3 minutes
                         self.current = await self.songs.get()
                 except asyncio.TimeoutError:
+                    self.bot.loop.create_task(self._ctx.send('Leaving channel due to inactivity'))
                     self.bot.loop.create_task(self.stop())
                     return
 
@@ -244,11 +247,13 @@ class VoiceState:
             self.voice.stop()
 
     async def stop(self):
-        self.songs.clear()
+        #self.songs.clear()
 
         if self.voice:
-            await self.voice.disconnect()
-            self.voice = None
+            #await self.voice.disconnect()
+            #self.voice = None
+            await self._ctx.invoke(Music._leave, ctx=self._ctx)
+            
 
 
 class Music(commands.Cog):
@@ -270,7 +275,7 @@ class Music(commands.Cog):
 
     def cog_check(self, ctx: commands.Context):
         if not ctx.guild:
-            raise commands.NoPrivateMessage('This command can\'t be used in DM channels.')
+            raise commands.NoPrivateMessage('This command can\'t be used in DM channels')
 
         return True
 
@@ -289,6 +294,12 @@ class Music(commands.Cog):
     @commands.command(name='join', aliases=['j'], invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
         """Joins a voice channel."""
+        
+        if not ctx.author.voice or not ctx.author.voice.channel:
+            return await ctx.send('You are not connected to any voice channel')
+            
+        if ctx.voice_client:
+            return await ctx.send('Bot is already in voice channel')
 
         destination = ctx.author.voice.channel
         if ctx.voice_state.voice:
@@ -298,14 +309,16 @@ class Music(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='summon')
-    @commands.has_permissions(manage_guild=True)
+    @check_permissions(manage_guild=True)
     async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Summons the bot to a voice channel.
         If no channel was specified, it joins your channel.
         """
 
-        if not channel and not ctx.author.voice:
-            raise VoiceError('You are neither connected to a voice channel nor specified a channel to join.')
+        if not channel:
+            if not ctx.author.voice:
+                return await ctx.send('You are neither connected to a voice channel nor specified a channel to join')
+            return await ctx.invoke(self._join)
 
         destination = channel or ctx.author.voice.channel
         if ctx.voice_state.voice:
@@ -315,19 +328,25 @@ class Music(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='leave', aliases=['disconnect', 'quit'])
-    @commands.has_permissions(move_members=True)
+    @check_permissions(move_members=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
 
         if not ctx.voice_state.voice:
-            return await ctx.send('Not connected to any voice channel.')
+            return await ctx.send('Not connected to any voice channel')
 
-        await ctx.voice_state.stop()
+        #await ctx.voice_state.stop()
+        try:
+            await ctx.guild.voice_client.disconnect()
+        except AttributeError:
+            pass
         del self.voice_states[ctx.guild.id]
         
     @commands.command(name='now', aliases=['current', 'playing', 'nowplaying'])
     async def _now(self, ctx: commands.Context):	           
-        """Displays the currently playing song."""	
+        """Displays the currently playing song."""
+        if(not ctx.voice_state.current):
+            return await ctx.send('Not playing anything')
         await ctx.send(embed=ctx.voice_state.current.create_embed())
 
     @commands.command(name='pause')
@@ -336,12 +355,13 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_playing():
-            return await ctx.send('I am not currently playing anything!', delete_after=20)
+            return await ctx.send('I am not currently playing anything!')
         if vc.is_paused():
             return
 
         vc.pause()
-        await ctx.send(f'**`{ctx.author}:`** paused the song!')
+        #await ctx.send(f'**`{ctx.author}:`** paused the song!')
+        await ctx.send('⏸ Paused')
 
     @commands.command(name='resume')
     async def resume_(self, ctx):
@@ -349,12 +369,13 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently playing anything!', delete_after=20)
+            return await ctx.send('I am not currently playing anything!')
         if not vc.is_paused():
-            return
+            return await ctx.send('I am not paused')
 
         vc.resume()
-        await ctx.send(f'**`{ctx.author}:`** resumed the song!')
+        #await ctx.send(f'**`{ctx.author}:`** resumed the song!')
+        await ctx.send('▶ Resumed playing')
 
     @commands.command(name='stop')
     async def stop_(self, ctx):
@@ -363,10 +384,12 @@ class Music(commands.Cog):
         """
         vc = ctx.voice_client
 
-        if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently playing anything!', delete_after=20)
+        if not vc or not vc.is_connected() or not ctx.voice_state.is_playing:
+            return await ctx.send('I am not currently playing anything!')
 
-        await self.cleanup(ctx.guild)
+        #await self.cleanup(ctx.guild)
+        ctx.voice_state.songs.clear()
+        ctx.voice_state.skip()
 
     @commands.command(name='skip')
     async def _skip(self, ctx: commands.Context):
@@ -452,13 +475,19 @@ class Music(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='play')
-    async def _play(self, ctx: commands.Context, *, search: str):
+    async def _play(self, ctx: commands.Context, *, search=None):
         """Plays a song.
         If there are songs in the queue, this will be queued until the
         other songs finished playing.
         This command automatically searches from various sites if no URL is provided.
         A list of these sites can be found here: https://rg3.github.io/youtube-dl/supportedsites.html
         """
+        
+        if search is None:
+            return await ctx.send('Must provide link or search query')
+            
+        if not ctx.author.voice or not ctx.author.voice.channel:
+            return await ctx.send('You are not connected to any voice channel')
 
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
@@ -474,15 +503,6 @@ class Music(commands.Cog):
                 await ctx.voice_state.songs.put(song)
                 await ctx.send('Enqueued {}'.format(str(source)))
 
-    @_join.before_invoke
-    @_play.before_invoke
-    async def ensure_voice_state(self, ctx: commands.Context):
-        if not ctx.author.voice or not ctx.author.voice.channel:
-            raise commands.CommandError('You are not connected to any voice channel.')
-
-        if ctx.voice_client:
-            if ctx.voice_client.channel != ctx.author.voice.channel:
-                raise commands.CommandError('Bot is already in a voice channel.')
 
 
 def setup(bot):
