@@ -79,50 +79,10 @@ async def author_reply(ctx, content=None, *, tts=False, embed=None, file=None, f
 
 # send message to messageable target, automatically splitting into multiple messages as needed
 # message and target are required args
-async def split_send(message=None, target=None, *, code_block=False, code_language=None, bookend=None, header=None, footer=None, *args=None, **kwargs=None):
-    if args is not None:
-        if not isinstance(args, list):
-            raise TypeError('args must be a list of arguments')
-        args_length = len(args)
-        if args_length < 2:
-            raise ValueError('args must at least contain items for message text and target')
-        if args_length > 7:
-            raise ValueError('too many arguments provided')
-        message = args[0]
-        target = args[1]
-        try:
-            code_block = args[2]
-            code_language = args[3]
-            bookend = args[4]
-            header = args[5]
-            footer = args[6]
-        except IndexError as e:
-            pass
-    if kwargs is not None:
-        if not isinstance(kwargs, dict):
-            raise TypeError('kwargs must be a dict of arguments by keyword')
-        message = kwargs['message']
-        target = kwargs['target']
-        if 'code_block' in kwargs:
-            code_block = kwargs['code_block']
-        if 'code_language' in kwargs:
-            code_language = kwargs['code_language']
-        if 'bookend' in kwargs:
-            bookend = kwargs['bookend']
-        if 'header' in kwargs:
-            header = kwargs['header']
-        if 'footer' in kwargs:
-            footer = kwargs['footer']
-    if message is None or target is None:
-        raise ValueError('message and target are required arguments')
-    if not isinstance(target, discord.abc.Messageable):
-        raise ValueError('target must be a messageble object (i.e. derived from discord.abc.Messageble)')
-    if not isinstance(message, str):
-        message = str(message)
-        
+async def split_send(message: str, target: discord.abc.Messageable, code_block=False, code_language=None, bookend=None, header=None, footer=None):
     if len(message) <= MAX_MESSAGE_LENGTH:
         # not splitting
-        sent = dress_message(message, target, code_block=code_block, code_language=code_language, bookend=bookend, header=header, footer=footer, first=True, last=True)
+        sent = await dress_message(message, target, code_block=code_block, code_language=code_language, bookend=bookend, header=header, footer=footer, first=True, last=True)
         if sent[0]:
             return [sent[1]]
         """
@@ -136,7 +96,7 @@ async def split_send(message=None, target=None, *, code_block=False, code_langua
         """
     
     # auto splitting
-    messsages = []
+    messages = []
     remaining_message = message
     split_more = True
     first = True
@@ -144,7 +104,7 @@ async def split_send(message=None, target=None, *, code_block=False, code_langua
     aggressive_split = False
     max_trunc = BASE_TRUNC_AMMOUNT
     pop_count = 1
-    split_index = len(message) > MAX_MESSAGE_LENGTH ? MAX_MESSAGE_LENGTH + 1 : len(message)
+    split_index = MAX_MESSAGE_LENGTH + 1 if len(message) > MAX_MESSAGE_LENGTH else len(message)
     while split_more:
         first_message = remaining_message[:split_index]
         remaining_message = remaining_message[split_index:]
@@ -164,25 +124,25 @@ async def split_send(message=None, target=None, *, code_block=False, code_langua
                     first_message, removed = sentence_trunc(first_message, pop_count, max_trunc)
                 if len(first_message) == MAX_MESSAGE_LENGTH:
                     first_message, removed = general_trunc(first_message, max_trunc, max_trunc > 400)
-                    if len(first_message) === MAX_MESSAGE_LENGTH:
+                    if len(first_message) == MAX_MESSAGE_LENGTH:
                         max_trunc = max_trunc + 200
                         aggressive_split = True
         elif '. ' in first_message:
             first_message, removed = sentence_trunc(first_message, pop_count, max_trunc)
             if len(first_message) == MAX_MESSAGE_LENGTH:
                 first_message, removed = general_trunc(first_message, max_trunc, max_trunc > 400)
-                if len(first_message) === MAX_MESSAGE_LENGTH:
+                if len(first_message) == MAX_MESSAGE_LENGTH:
                     max_trunc = max_trunc + 200
                     aggressive_split = True
         else:
             first_message, removed = general_trunc(first_message, max_trunc, max_trunc > 400)
-                if len(first_message) === MAX_MESSAGE_LENGTH:
-                    max_trunc = max_trunc + 100
-                    aggressive_split = True
+            if len(first_message) == MAX_MESSAGE_LENGTH:
+                max_trunc = max_trunc + 100
+                aggressive_split = True
         remaining_message = f'{removed}{remaining_message}'
         if len(remaining_message.strip()) == 0:
             last = True
-        sent = dress_message(first_message, target, code_block=code_block, code_language=code_language, bookend=bookend, header=header, footer=footer, first=frist, last=last)
+        sent = await dress_message(first_message, target, code_block, code_language, bookend, header, footer, first, last)
         if sent[0]:
             messages.append(sent[1])
             aggressive_split = False
@@ -199,14 +159,14 @@ async def split_send(message=None, target=None, *, code_block=False, code_langua
     if last:
         return messages
     last = True
-    sent = dress_message(remaining_message, target, code_block=code_block, code_language=code_language, bookend=bookend, header=header, footer=footer, first=frist, last=last)
+    sent = await dress_message(remaining_message, target, code_block, code_language, bookend, header, footer, first, last)
     if sent[0]:
         messages.append(sent[1])
         return messages
     if bookend is not None:
         if isinstance(bookend, list):
             if len(bookend) % 2 == 0:
-                footer = ''.(bookend[len(bookend)/2:])
+                footer = ''.join(bookend[len(bookend)/2:])
             else:
                 footer = ''.join(bookend)
         else:
@@ -245,7 +205,7 @@ def general_trunc(first_message, max_trunc, forced):
     return first_message, removed
 
 # helper function to manage application of split_send arguments on messages
-def dress_message(message, target, *, code_block=False, code_language=None, bookend=None, header=None, footer=None, first=False, last=False):
+async def dress_message(message, target, code_block=False, code_language=None, bookend=None, header=None, footer=None, first=False, last=False):
     msg = message
     if code_block:
        lang = code_language if code_language is not None else ''
@@ -255,7 +215,7 @@ def dress_message(message, target, *, code_block=False, code_language=None, book
             if len(bookend) % 2 == 0:
                 bookend_length = len(bookend)
                 fbkend = ''.join(bookend[:bookend_length/2])
-                bbkend = ''.(bookend[bookend_length/2:])
+                bbkend = ''.join(bookend[bookend_length/2:])
                 if first:
                     msg = f'{fbkend}{msg}'
                 if last:
