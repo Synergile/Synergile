@@ -7,7 +7,9 @@ from discord.ext import commands
 import re
 SNOWFLAKE_REGEX = re.compile('\D') #compile regular expression matching all characters that aren't digits
 MAX_MESSAGE_LENGTH = 2000
-BASE_TRUNC_AMMOUNT = 200
+BASE_TRUNC_LENGTH = 200
+MAX_TRUNC_LENGTH = 499
+
 
 #should be a util when cog setup
 #resolve a string to a member object
@@ -81,81 +83,79 @@ async def author_reply(ctx, content=None, *, tts=False, embed=None, file=None, f
 # message and target are required args
 async def split_send(message: str, target: discord.abc.Messageable, code_block=False, code_language=None, bookend=None, header=None, footer=None):
     if len(message) <= MAX_MESSAGE_LENGTH:
-        # not splitting
+        # no split needed (considering base message)
         sent = await dress_message(message, target, code_block=code_block, code_language=code_language, bookend=bookend, header=header, footer=footer, first=True, last=True)
         if sent[0]:
             return [sent[1]]
-        """
-        # going to try just advancing with the original message at this point instead of updating message
-        else:
-            message = sent[1]
-            bookend = None
-            header = None
-            footer = None
-            # problem: a codeblock that goes over the char limit at this stage
-        """
     
     # auto splitting
     messages = []
+    splitter = ''
     remaining_message = message
     split_more = True
     first = True
     last = False
-    aggressive_split = False
-    max_trunc = BASE_TRUNC_AMMOUNT
+    max_trunc = BASE_TRUNC_LENGTH
     pop_count = 1
-    split_index = MAX_MESSAGE_LENGTH + 1 if len(message) > MAX_MESSAGE_LENGTH else len(message)
+    split_index = MAX_MESSAGE_LENGTH if len(message) > MAX_MESSAGE_LENGTH else len(message)
     while split_more:
         first_message = remaining_message[:split_index]
         remaining_message = remaining_message[split_index:]
-        popped = []
         removed = ''
         if '\n' in first_message:
-            for i in range(pop_count):
-                msg_split = first_message.split('\n')
-                popped.append(msg_split.pop())
-                if len('\n'.join(popped)) > max_trunc:
-                    msg_split.extend(popped)
-                    break
-            first_message = '\n'.join(msg_split)
-            removed = '\n'.join(popped)
-            if len(first_message) == MAX_MESSAGE_LENGTH:
+            print('line')
+            splitter = '\n'
+            first_message, removed = line_trunc(first_message, pop_count, max_trunc)
+            if len(first_message) == 0:
+                print('\tsentence')
+                first_message = removed
+                splitter = '. '
                 if '. ' in first_message:
                     first_message, removed = sentence_trunc(first_message, pop_count, max_trunc)
-                if len(first_message) == MAX_MESSAGE_LENGTH:
-                    first_message, removed = general_trunc(first_message, max_trunc, max_trunc > 400)
-                    if len(first_message) == MAX_MESSAGE_LENGTH:
-                        max_trunc = max_trunc + 200
-                        aggressive_split = True
+                if len(first_message) == 0:
+                    print('\t\tgeneral')
+                    first_message = removed
+                    splitter = ' '
+                    first_message, removed = trunc_str(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
+                    if len(first_message) == 0:
+                        max_trunc = max_trunc + 100
         elif '. ' in first_message:
+            print('sentence')
+            splitter = '. '
             first_message, removed = sentence_trunc(first_message, pop_count, max_trunc)
-            if len(first_message) == MAX_MESSAGE_LENGTH:
-                first_message, removed = general_trunc(first_message, max_trunc, max_trunc > 400)
-                if len(first_message) == MAX_MESSAGE_LENGTH:
-                    max_trunc = max_trunc + 200
-                    aggressive_split = True
+            if len(first_message) == 0:
+                print('\tgeneral')
+                first_message = removed
+                splitter = ' '
+                first_message, removed = trunc_str(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
+                if len(first_message) == 0:
+                    max_trunc = max_trunc + 100
         else:
-            first_message, removed = general_trunc(first_message, max_trunc, max_trunc > 400)
-            if len(first_message) == MAX_MESSAGE_LENGTH:
+            print('general')
+            splitter = ' '
+            first_message, removed = trunc_str(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
+            if len(first_message) == 0:
                 max_trunc = max_trunc + 100
-                aggressive_split = True
         remaining_message = f'{removed}{remaining_message}'
         if len(remaining_message.strip()) == 0:
             last = True
-        sent = await dress_message(first_message, target, code_block, code_language, bookend, header, footer, first, last)
+        if len(first_message) != 0:
+            sent = await dress_message(first_message, target, code_block, code_language, bookend, header, footer, first, last)
+        else:
+            sent = (False, removed)
         if sent[0]:
             messages.append(sent[1])
-            aggressive_split = False
             pop_count = 1
-            max_trunc = BASE_TRUNC_AMMOUNT
+            max_trunc = BASE_TRUNC_LENGTH
+            splitter = ''
             if first:
                 header = None
                 first = False
             split_more = len(remaining_message) > MAX_MESSAGE_LENGTH
         else:
-            aggressive_split = True
-            max_trunc += len(sent[1]) - MAX_MESSAGE_LENGTH
+            max_trunc += 20 + abs(len(sent[1]) - MAX_MESSAGE_LENGTH)
             pop_count += 1
+            remaining_message = f'{first_message}{splitter}{remaining_message}'
     if last:
         return messages
     last = True
@@ -176,32 +176,69 @@ async def split_send(message: str, target: discord.abc.Messageable, code_block=F
     messages.extend(split_sent)
     return messages
 
-# attempt truncation at the last complete sentence
-def sentence_trunc(first_message, pop_count, max_trunc):
+def line_trunc(first_message, pop_count, max_trunc):
+    split_pattern = '\n'
+    removed = first_message[0-max_trunc:]
+    first_message = first_message[:0-max_trunc]
+    restoring = removed.split(split_pattern)
+    popped = []
     for i in range(pop_count):
-        msg_split = first_message.split('. ')
-        popped.append(msg_split.pop())
-        if len('. '.join(popped)) > max_trunc:
-            msg_split.extend(popped)
+        if len(restoring) == 0:
             break
-    first_message = '. '.join(msg_split)
-    removed = '. '.join(popped)
+        popped.insert(0, restoring.pop())
+    if len(split_pattern.join(restoring).strip()) > 0:
+        first_message = f'{first_message}{split_pattern.join(restoring)}'
+        removed = split_pattern.join(popped)
+    else:
+        restoring.extend(popped)
+        removed = split_pattern.join(restoring)
+        removed = f'{first_message}{removed}'
+        first_message = ''
     return first_message, removed
 
-# attempt truncation after the last complete word in the final <max_trunc> characters
-def general_trunc(first_message, max_trunc, forced):
+# attempt truncation at the last complete sentence
+def sentence_trunc(first_message, pop_count, max_trunc):
+    split_pattern = r'. '
+    removed = first_message[0-max_trunc:]
+    first_message = first_message[:0-max_trunc]
+    restoring = removed.split(split_pattern)
+    popped = []
+    for i in range(pop_count):
+        if len(restoring) == 0:
+            break
+        popped.insert(0, restoring.pop())
+    if len(split_pattern.join(restoring).strip()) > 0:
+        first_message = f'{first_message}{split_pattern.join(restoring)}.'
+        removed = split_pattern.join(popped)
+    else:
+        restoring.extend(popped)
+        removed = split_pattern.join(restoring)
+        removed = f'{first_message}{removed}'
+        first_message = ''
+    return first_message, removed
+
+# attempt truncation at the last complete word in the final <max_trunc> characters
+def trunc_str(first_message, pop_count, max_trunc, forced=False, split_pattern=' '):
     if forced:
-        max_trunc = BASE_TRUNC_AMMOUNT
+        max_trunc = BASE_TRUNC_LENGTH
+        print('fix up')
     removed = first_message[0-max_trunc:]
     first_message = first_message[:0-max_trunc]
     if not forced:
-        second_split = removed.split(' ')
-        restoring = second_split.pop()
-        if len(''.join(second_split)) > 0:
-            first_message = f'{first_message}{restoring}'
+        restoring = removed.split(split_pattern)
+        popped = []
+        for i in range(pop_count):
+            if len(restoring) == 0:
+                break
+            popped.insert(0, restoring.pop())
+        if len(split_pattern.join(restoring).strip()) > 0:
+            first_message = f'{first_message}{split_pattern.join(restoring)}'
+            removed = split_pattern.join(popped)
         else:
-            second_split.append(restoring)
-        removed = ' '.join(second_split)
+            restoring.extend(popped)
+            removed = split_pattern.join(restoring)
+            removed = f'{first_message}{removed}'
+            first_message = ''
     return first_message, removed
 
 # helper function to manage application of split_send arguments on messages
@@ -232,12 +269,12 @@ async def dress_message(message, target, code_block=False, code_language=None, b
                 msg = f'{bookend}{msg}'
             if last:
                 msg = f'{msg}{bookend}'
-    if header is not None:
+    if first and header is not None:
         msg = f'{header}{msg}'
-    if footer is not None:
+    if last and footer is not None:
         msg = f'{msg}{footer}'
+    # check if splitting is needed after applying arguments
     if len(msg) <= MAX_MESSAGE_LENGTH:
-        # not splitting needed (recheck after applying arguments)
         sent = await target.send(msg)
         return (True, sent)
     else:
