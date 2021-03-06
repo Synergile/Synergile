@@ -116,7 +116,7 @@ async def split_send(message: str, target: discord.abc.Messageable, code_block=F
                     print('\t\tgeneral')
                     first_message = removed
                     splitter = ' '
-                    first_message, removed = trunc_str(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
+                    first_message, removed = general_trunc(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
                     if len(first_message) == 0:
                         max_trunc = max_trunc + 100
         elif '. ' in first_message:
@@ -127,13 +127,13 @@ async def split_send(message: str, target: discord.abc.Messageable, code_block=F
                 print('\tgeneral')
                 first_message = removed
                 splitter = ' '
-                first_message, removed = trunc_str(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
+                first_message, removed = general_trunc(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
                 if len(first_message) == 0:
                     max_trunc = max_trunc + 100
         else:
             print('general')
             splitter = ' '
-            first_message, removed = trunc_str(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
+            first_message, removed = general_trunc(first_message, pop_count, max_trunc, max_trunc > MAX_TRUNC_LENGTH)
             if len(first_message) == 0:
                 max_trunc = max_trunc + 100
         remaining_message = f'{removed}{remaining_message}'
@@ -218,7 +218,7 @@ def sentence_trunc(first_message, pop_count, max_trunc):
     return first_message, removed
 
 # attempt truncation at the last complete word in the final <max_trunc> characters
-def trunc_str(first_message, pop_count, max_trunc, forced=False, split_pattern=' '):
+def general_trunc(first_message, pop_count, max_trunc, forced=False, split_pattern=' '):
     if forced:
         max_trunc = BASE_TRUNC_LENGTH
         print('fix up')

@@ -45,3 +45,25 @@ def splitArgs(input):
     flags.pop(0) # remove leading empty string
     flags = [flag.lower() for flag in flags]
     return [optionSplitArgs, flags]
+
+# attempt truncation at the last complete word in the final <max_trunc_length> characters
+def trunc_str(string, max_trunc_length=200, forced=False, split_pattern=' ', pop_count=1):
+    removed = string[0-max_trunc_length:]
+    string = string[:0-max_trunc_length]
+    if forced:
+        return string, removed
+    restoring = removed.split(split_pattern)
+    popped = []
+    for i in range(pop_count):
+        if len(restoring) == 0:
+            break
+        popped.insert(0, restoring.pop())
+    if len(split_pattern.join(restoring).strip()) > 0:
+        string = f'{string}{split_pattern.join(restoring)}'
+        removed = split_pattern.join(popped)
+    else:
+        restoring.extend(popped)
+        removed = split_pattern.join(restoring)
+        removed = f'{string}{removed}'
+        string = ''
+    return string, removed
