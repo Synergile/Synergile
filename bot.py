@@ -35,11 +35,12 @@ async def on_command_error(ctx, error):
     if isinstance(error,commands.errors.CommandNotFound):
         return
     else:
-        print(type(error))
         channel = bot.get_channel(817127799256252437)
         log_form = "=====ERROR====\nTime: {0}\nCommand: {1}\nError:\n```{2}```"
-        await channel.send(log_form.format(datetime.utcnow(), ctx.message.content,error))
-        embed = discord.Embed(title="Something unknown happened!", description="The issue has been reported", color=discord.Color.red())
+        await channel.send(log_form.format(datetime.utcnow(), ctx.message.content, error))
+        embed = discord.Embed(title="Something unknown happened!",
+							  description="The issue has been reported",
+							  color=discord.Color.red())
         await ctx.send(embed=embed)
 
 
