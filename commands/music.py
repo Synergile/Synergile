@@ -10,6 +10,7 @@ from discord.ext import commands
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
+
 class VoiceError(Exception):
     pass
 
@@ -485,4 +486,4 @@ class Music(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(Music(bot))
+    bot.add_cog(Music(bot))
