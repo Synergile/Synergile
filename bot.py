@@ -37,7 +37,7 @@ async def on_command_error(ctx, error):
     else:
         channel = bot.get_channel(817127799256252437)
         with open("error.log", "w") as err:
-            err.write(str(traceback.format_exception(type(error), error, error.__traceback__)))
+            err.write("".join(traceback.format_exception(type(error), error, error.__traceback__)))
         with open("error.log", "rb") as err:
             file = discord.File(err)
         log_form = "=====ERROR====\nTime: {0}\nCommand: {1}\nError:\n```{2}```"
