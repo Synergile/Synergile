@@ -32,9 +32,13 @@ async def on_ready():
 
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx: commands.Context, error):
     if isinstance(error, commands.errors.CommandNotFound):
         return
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        err_emb = discord.Embed(title=f"Missing the '{error.param}' arg",
+                                description=f"Usage: {ctx.command.signature}",
+                                color=discord.Color.red())
     else:
         channel = bot.get_channel(817127799256252437)
         with open("error.log", "w") as err:
