@@ -17,7 +17,7 @@ def configuration() -> Tuple[str, str]:
     token = ""
     prefix = ""
     try:
-        with open("../config.config") as config:
+        with open("config.config") as config:
             cfg = config.read()
     except FileNotFoundError as exc:
         raise NoConfigError(exc) from exc
