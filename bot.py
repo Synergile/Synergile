@@ -39,6 +39,7 @@ async def on_command_error(ctx, error):
         err_emb = discord.Embed(title=f"Missing the '{error.param}' arg",
                                 description=f"Usage: {ctx.command.signature}",
                                 color=discord.Color.red())
+        await ctx.send(embed=err_emb)
     else:
         channel = bot.get_channel(817127799256252437)
         with open("error.log", "w") as err:
