@@ -439,7 +439,6 @@ class Music(commands.Cog):
         await ctx.send(f'Connected to **{channel.name}**')
 
     @commands.command(name='leave', aliases=['disconnect', 'quit'])
-    @check_permissions(move_members=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
 
