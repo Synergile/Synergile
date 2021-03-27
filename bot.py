@@ -3,11 +3,11 @@ import asyncio
 from discord.ext import commands
 from datetime import datetime
 import os
-import configuration
-import ensure_path
+from util import configuration
+from util import ensure_path
 import traceback
 if os.getcwd() != ensure_path.send_path():
-        os.chdir(ensure_path.send_path())
+    os.chdir(ensure_path.send_path())
 token, prefix = configuration.configuration()
 
 intents = discord.Intents()
@@ -22,6 +22,8 @@ def readyAtGetter(self):
 def readyAtSetter(self,value):
     self._readyAt = value
 commands.Bot.readyAt = property(readyAtGetter, readyAtSetter)
+
+
 @bot.event
 async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
@@ -29,10 +31,9 @@ async def on_ready():
     print (f"Bot online")
 
 
-
 @bot.event
 async def on_command_error(ctx, error):
-    if isinstance(error,commands.errors.CommandNotFound):
+    if isinstance(error, commands.errors.CommandNotFound):
         return
     else:
         channel = bot.get_channel(817127799256252437)
