@@ -32,7 +32,7 @@ async def on_ready():
 
 
 @bot.event
-async def on_command_error(ctx: commands.Context, error):
+async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandNotFound):
         return
     elif isinstance(error, commands.errors.MissingRequiredArgument):
