@@ -1,5 +1,5 @@
 import os
-import ensure_path
+from util import ensure_path
 from typing import Tuple
 
 
