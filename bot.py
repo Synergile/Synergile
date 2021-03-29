@@ -44,7 +44,14 @@ async def on_command_error(ctx: commands.Context, error):
     if isinstance(error, commands.errors.CommandNotFound):
         return
     elif isinstance(error, commands.errors.MissingRequiredArgument):
-        err_emb = discord.Embed(title=f"Missing the '{str(error.param).rstrip(': str')}' arg",
+        param_stripped = error.param.split(":")
+        try:
+            param_stripped.pop(1)
+        except IndexError:  #The parameter probably wasn't typehinted
+            pass
+        finally:
+            parameter = "".join(param_stripped)
+        err_emb = discord.Embed(title=f"Missing the '{parameter}' arg",
                                 description=f"Usage: {bot.command_prefix}{ctx.command.qualified_name} {ctx.command.signature}",
                                 color=discord.Color.red())
         await ctx.send(embed=err_emb)
