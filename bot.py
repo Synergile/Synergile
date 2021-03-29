@@ -15,7 +15,7 @@ intents = discord.Intents()
 intents.value = 0x378b
 desc = "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
 bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc,
-                              intents=intents)
+                              intents=intents, status=discord.Status.online, activity=discord.Game(f'{prefix}help for commands'))
 
 
 # NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
@@ -34,9 +34,9 @@ commands.Bot.readyAt = property(readyAtGetter, readyAtSetter)
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game(f'{bot.command_prefix}help for commands'))
     bot.readyAt = datetime.utcnow()
-    print (f"Bot online")
+    form = f"Bot started\nUser: {bot.user}\nTime: {bot.readyAt}\nGuilds: {len(bot.guilds)}"
+    print(form)
 
 
 @bot.event
