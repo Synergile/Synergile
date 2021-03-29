@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from util.discordutil import check_permissions
 
 
 class Purge(commands.Cog, name='Purge'):
@@ -7,6 +8,7 @@ class Purge(commands.Cog, name='Purge'):
         self.bot = bot
         self.response = ['Yes', 'No']
 
+    @check_permissions(manage_messages=True)
     @commands.command(name='purge', description="Purges a number of messages from the channel", usage='<amount>')
     async def purge(self, ctx, amount=None):
         if amount is not None:

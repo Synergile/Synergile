@@ -7,6 +7,7 @@ class UnloadCommand(commands.Cog, name='UnloadCommand'):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.has_any_role(713125578773102603, 766100975382953984)
     @commands.command(description="Unload a command", aliases=['ulc'], usage='<commandName>')
     async def unloadCommand(self, ctx, *, input=None):
         if input is None:

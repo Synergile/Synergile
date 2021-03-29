@@ -11,6 +11,7 @@ class Restart(commands.Cog, name='Restart'):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.has_any_role(713125578773102603, 766100975382953984)
     @commands.command(description="Restart the bot")
     async def restart(self, ctx):
         await self.bot.change_presence(status=discord.Status.offline)

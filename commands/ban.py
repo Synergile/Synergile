@@ -9,6 +9,7 @@ class Ban(commands.Cog, name='Ban'):
         self.bot = bot
         self.modLogChannelID = 713131470625046549  # will be guild lookup for value in database
 
+    @check_permissions(ban_members=True)
     @commands.command(description="Ban a member from the server", usage='<member> [-r <reason>]')
     async def ban(self, ctx, *, member=None, reason="No reason provided"):
         if member is None:

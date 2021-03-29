@@ -9,6 +9,7 @@ class Kick(commands.Cog, name='Kick'):
         self.bot = bot
         self.modLogChannelID = 713131470625046549  # will be guild lookup for value in database
 
+    @check_permissions(kick_members=True)
     @commands.command(description="Kick a member from the server", usage='<member> [-r <reason>]')
     async def kick(self, ctx, *, member=None, reason="No reason provided"):
         if member is None:
