@@ -1,7 +1,7 @@
 from discord import Forbidden
 from discord.ext import commands
 from util.pyutil import buildMultiMatchString, splitArgs
-from util.discordutil import resolveMember, modActionLogEmbed
+from util.discordutil import resolveMember, modActionLogEmbed, check_permissions
 
 
 class Kick(commands.Cog, name='Kick'):
