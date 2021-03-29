@@ -8,37 +8,41 @@ import re
 
 SNOWFLAKE_REGEX = re.compile('\D')  # compile regular expression matching all characters that aren't digits
 
+#decorator to check user permissions for command
+def check_permissions(**perms):
+    def predicate(ctx):
+        return ((discord.Permissions(**perms).value | 0x8) & ctx.message.author.permissions_in(ctx.channel).value) > 0x0
+    return commands.check(predicate)
 
-# should be a util when cog setup
-# resolve a string to a member object
-async def resolveMember(ctx, string_to_resolve):
-    mc = commands.MemberConverter()
-    string_to_resolve = string_to_resolve.strip()
-    if isSnowflake(string_to_resolve):
-        # gave an number that may be an ID
-        member = ctx.guild.get_member(int(string_to_resolve))  # if string_to_resolve is not a valid snowflake, mem=None
-    elif '@' in string_to_resolve:
-        # mentioned a user
-        try:
-            member = await mc.convert(ctx, string_to_resolve)
-        except Exception:
-            member = None
-    else:
-        try:
-            memList = await ctx.guild.query_members(query=string_to_resolve)
-        except Exception:
-            memList = []
-        if len(memList) == 0:
-            member = None
-        elif len(memList) == 1:
-            member = memList[0]
-        else:
-            return memList
-    return member
-
-
-# returns true if a value only contains characters 0-9, false otherwise. does not check length.
-# a consequence of this is that is will return true on empty values
+#should be a util when cog setup
+#resolve a string to a member object
+async def resolveMember(ctx, stringToResolve):
+	mc = commands.MemberConverter()
+	stringToResolve = stringToResolve.strip()
+	if isSnowflake(stringToResolve): 
+		#gave an number that may be an ID
+		member = ctx.guild.get_member(int(stringToResolve)) #if stringToResolve is not a valid snowflake, mem=None
+	elif '@' in stringToResolve:
+		#mentioned a user
+		try:
+			member = await mc.convert(ctx, stringToResolve)
+		except Exception:
+			member = None
+	else:
+		try:
+			memList = await ctx.guild.query_members(query = stringToResolve)
+		except Exception:
+			memList = []
+		if len(memList)==0:
+			member = None
+		elif len(memList)==1:
+			member = memList[0]
+		else:
+			return memList
+	return member
+	
+#returns true if a value only contains characters 0-9, false otherwise. does not check length. 
+#a consequence of this is that is will return true on empty values
 def isSnowflake(snowflake):
     return isinstance(snowflake, str) and not SNOWFLAKE_REGEX.search(snowflake)
 

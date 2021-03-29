@@ -142,3 +142,6 @@ cython_debug/
 
 #PyCharm nonsense
 .idea/
+
+#Error log format
+*.log
