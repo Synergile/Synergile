@@ -6,6 +6,7 @@ import os
 from util import configuration
 from util import ensure_path
 import traceback
+
 if os.getcwd() != ensure_path.send_path():
     os.chdir(ensure_path.send_path())
 token, prefix = configuration.configuration()
@@ -13,14 +14,21 @@ token, prefix = configuration.configuration()
 intents = discord.Intents()
 intents.value = 0x378b
 desc = "Moderation bot engineered by CodeWritten, wakfi, jedi3, and Napkins"
-bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc, intents=intents)
-#NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
+bot = commands.AutoShardedBot(command_prefix=prefix, help_command=None, case_insensitive=True, description=desc,
+                              intents=intents)
 
-#add readyAt property to bot class
+
+# NO_MENTIONS = discord.AllowedMentions(everyone=False,users=False,roles=False) - add in d.py 1.4
+
+# add readyAt property to bot class
 def readyAtGetter(self):
     return self._readyAt
-def readyAtSetter(self,value):
+
+
+def readyAtSetter(self, value):
     self._readyAt = value
+
+
 commands.Bot.readyAt = property(readyAtGetter, readyAtSetter)
 
 

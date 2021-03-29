@@ -26,50 +26,50 @@ SOFTWARE.
 from io import StringIO
 from os import linesep
 
+
 class StringBuilder:
-    '''Provides efficient and performant concatenation of strings
-    The inspiriation for this class comes from the comparision of string concatenation methods found at https://waymoot.org/home/python_string/
+    """Provides efficient and performant concatenation of strings
+    The inspiration for this class comes from the comparison of string concatenation methods found at https://waymoot.org/home/python_string/
     This class serves as an encapsulation of 'method 5', in order to optimize both performance and memory usage
-    '''
-    
+    """
+
     def __init__(self, initial_str=None):
-        '''Construct a new StringBuilder. An initial value may optionally be provided'''
+        """Construct a new StringBuilder. An initial value may optionally be provided"""
         self.file_str = StringIO()
         if initial_str is not None:
             self.file_str.write(str(initial_str))
-            
-    def __str__(self)-> str:
-        '''Returns a string representation of the data. Causes StrngBuilder to stringify when used in string contexts like str()'''
+
+    def __str__(self) -> str:
+        """Returns a string representation of the data. Causes StrngBuilder to stringify when used in string contexts like str()"""
         return self.file_str.getvalue()
-            
-        
+
     @classmethod
     def from_list(cls, data: list):
-        '''
+        """
         Returns a new StringBuilder using the provided list of initial values. Values are concatenated together in order.
         Accepts any values that str() can be called on.
-        '''
+        """
         self = cls.__new__(cls)
         self.file_str = StringIO()
         for str in data:
             self.file_str.write(str(str))
         return self
-    
+
     def append(self, data):
-        '''Appends data to the StringBuilder. Accepts any value that str() can be called on. Returns self to enable successive chaining'''
+        """Appends data to the StringBuilder. Accepts any value that str() can be called on. Returns self to enable successive chaining"""
         self.file_str.write(str(data))
         return self
-    
+
     def appendln(self, data=''):
-        '''Appends data to the StringBuilder and terminates with a line seperator. Accepts any value that str() can be called on. Returns self to enable successive chaining'''
+        """Appends data to the StringBuilder and terminates with a line seperator. Accepts any value that str() can be called on. Returns self to enable successive chaining"""
         self.file_str.write(str(data))
         self.file_str.write(linesep)
         return self
 
-    def to_string(self)-> str:
-        '''Returns a string representation of the data'''
+    def to_string(self) -> str:
+        """Returns a string representation of the data"""
         return self.file_str.getvalue()
-        
-    def len(self)-> int:
-        '''Returns the length of the string currently'''
+
+    def len(self) -> int:
+        """Returns the length of the string currently"""
         return len(self.file_str.getvalue())
