@@ -7,7 +7,8 @@ from util.discordutil import resolveMember, modActionLogEmbed, check_permissions
 class Ban(commands.Cog, name='Ban'):
     def __init__(self, bot):
         self.bot = bot
-        self.modLogChannelID = 713131470625046549  # will be guild lookup for value in database
+        #self.modLogChannelID = 827050550117400576  # will be guild lookup for value in database 
+        self.modLogChannelID = None # disabled for current public release
 
     @check_permissions(ban_members=True)
     @commands.command(description="Ban a member from the server", usage='<member> [-r <reason>]')

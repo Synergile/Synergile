@@ -49,7 +49,7 @@ async def on_command_error(ctx: commands.Context, error):
                                 color=discord.Color.red())
         await ctx.send(embed=err_emb)
     else:
-        channel = bot.get_channel(817127799256252437)
+        channel = bot.get_channel(827050550117400577)
         with open("error.log", "w") as err:
             err.write("".join(traceback.format_exception(type(error), error, error.__traceback__)))
         with open("error.log", "rb") as err:
