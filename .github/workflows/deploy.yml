@@ -29,4 +29,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: cd ${{ secrets.CANARYPATH }} && git pull origin master && pm2 restart 1
+          script: cd ${{ secrets.CANARYPATH }} && git pull origin develop && pipenv sync && pm2 restart 1
