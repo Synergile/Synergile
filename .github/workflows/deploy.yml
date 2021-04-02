@@ -15,7 +15,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          script: cd ${{ secrets.PROJECTPATH }} && git pull origin master && pm2 restart bot.py
+          script: cd ${{ secrets.PROJECTPATH }} && git pull origin master && pipenv install --ignore-pipfile && pm2 restart 0
 
   deploy-develop:
     if: github.ref == 'refs/heads/develop'
