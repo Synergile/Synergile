@@ -20,15 +20,16 @@ class Ping(commands.Cog, name='Ping'):
         }
         m = await ctx.send("Pinging...")
         clr = None
+        latency = int((snowflake_time(m.id) - snowflake_time(ctx.message.id)).microseconds / 1000)
         for png, color in colors.items():
-            if png == 299 and int((snowflake_time(m.id) - snowflake_time(ctx.message.id)).microseconds / 1000) < png:
+            if png == 299 and latency < png:
                 clr = color
-            elif int((snowflake_time(m.id) - snowflake_time(ctx.message.id)).microseconds / 1000) > png:
+            elif latency > png:
                 clr = color
-            if clr is not None and int((snowflake_time(m.id) - snowflake_time(ctx.message.id)).microseconds / 1000) > png:
+            if clr is not None and latency > png:
                 clr = color
         embed = discord.Embed(title="Pong! \U0001f3d3",
-                              description=f"Message Latency: {int((snowflake_time(m.id) - snowflake_time(ctx.message.id)).microseconds / 1000)}ms\nAPI Latency: {round(self.bot.latency*1000)}ms",
+                              description=f"Message Latency: {latency}ms\nAPI Latency: {round(self.bot.latency*1000)}ms",
                               color=clr)
         await m.edit(content="", embed=embed)
 
