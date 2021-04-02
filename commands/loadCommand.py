@@ -6,7 +6,7 @@ class LoadCommand(commands.Cog, name='LoadCommand'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.has_any_role(713125578773102603, 766100975382953984)
+    @commands.has_role(827050549588262979)
     @commands.command(description="Load a command", aliases=['ldc'], usage='<commandName>')
     async def loadCommand(self, ctx, *, commandName=None):
         if commandName is None:

@@ -7,7 +7,8 @@ from util.discordutil import resolveMember, modActionLogEmbed, check_permissions
 class Kick(commands.Cog, name='Kick'):
     def __init__(self, bot):
         self.bot = bot
-        self.modLogChannelID = 713131470625046549  # will be guild lookup for value in database
+        #self.modLogChannelID = 827050550117400576  # will be guild lookup for value in database 
+        self.modLogChannelID = None # disabled for current public release
 
     @check_permissions(kick_members=True)
     @commands.command(description="Kick a member from the server", usage='<member> [-r <reason>]')
