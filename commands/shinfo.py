@@ -16,14 +16,14 @@ class ShInfo(commands.Cog, name='Sh_info'):
         }
         shard_ids = ", ".join([str(key) for key in self.bot.shards.keys()])
         shard_count = len(self.bot.shards)
-        this_shard = str(round(self.bot.latency*1000))
+        this_shard = round(self.bot.latency*1000)
         clr = None
         for ping, color in colors.items():
-            if ping == 299 and int(this_shard) < ping:
+            if ping == 299 and this_shard < ping:
                 clr = color
-            elif int(this_shard) > ping:
+            elif this_shard > ping:
                 clr = color
-            if clr is not None and int(this_shard) > ping:
+            if clr is not None and this_shard > ping:
                 clr = color
         all_shards = ", ".join([str(round(latency[1]*1000))+"ms" for latency in self.bot.latencies])
         if shard_count >= 10:
