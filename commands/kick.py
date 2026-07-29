@@ -46,7 +46,7 @@ class Kick(commands.Cog, name='Kick'):
 				if self.modLogChannelID is not None:
 					await ctx.guild.get_channel(self.modLogChannelID).send(embed=modActionLogEmbed('Kicked',mem,reason,ctx.author))
 			except Exception:
-				await ctx.send('An unknown error occured. Please try again later')
+				await ctx.send('An unknown error occurred. Please try again later')
 
 def setup(bot):
 	bot.add_cog(Kick(bot))

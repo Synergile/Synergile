@@ -46,7 +46,7 @@ class Ban(commands.Cog, name='Ban'):
 				if self.modLogChannelID is not None:
 					await ctx.guild.get_channel(self.modLogChannelID).send(embed=modActionLogEmbed('Banned',mem,reason,ctx.author))
 			except Exception:
-				await ctx.send('An unknown error occured. Please try again later')
+				await ctx.send('An unknown error occurred. Please try again later')
 
 def setup(bot):
 	bot.add_cog(Ban(bot))

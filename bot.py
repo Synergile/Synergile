@@ -26,7 +26,7 @@ async def on_ready():
 async def on_command_error(ctx, error):
 	if isinstance(error,commands.errors.CommandNotFound):
 		return
-	await ctx.send("An error occured!\n```{}```".format(error))
+	await ctx.send("An error occurred!\n```{}```".format(error))
 '''
 		
 for cog in os.listdir(f".{os.path.sep}commands"):#path
